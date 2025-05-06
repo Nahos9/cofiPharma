@@ -1,0 +1,266 @@
+import AdminLayout from '@/Layouts/AdminLayout'
+import { Head } from '@inertiajs/react'
+import { useState, useMemo } from 'react'
+import { router } from '@inertiajs/react'
+import { Trash, Eye } from 'lucide-react';
+
+const AllDemandes = ({ demandes }) => {
+    const [selectedItems, setSelectedItems] = useState([])
+    const [selectAll, setSelectAll] = useState(false)
+    const [search, setSearch] = useState('')
+    const [status, setStatus] = useState('')
+    // console.log(demandes.data);
+    const filteredDemandes = useMemo(() => {
+        return demandes.data.filter(demande => {
+            const matchesSearch = search === '' ||
+                (demande.first_name && demande.first_name.toLowerCase().includes(search.toLowerCase())) ||
+                (demande.last_name && demande.last_name.toLowerCase().includes(search.toLowerCase())) ||
+                (demande.email && demande.email.toLowerCase().includes(search.toLowerCase())) ||
+                (demande.montant && demande.montant.toString().includes(search)) ||
+                (demande.type && demande.type.toLowerCase().includes(search.toLowerCase()));
+
+            const matchesStatus = status === '' || demande.status === status;
+
+            return matchesSearch && matchesStatus;
+        });
+    }, [demandes.data, search, status]);
+
+    const handleSelectAll = (e) => {
+        const checked = e.target.checked
+        setSelectAll(checked)
+        setSelectedItems(checked ? filteredDemandes.map(demande => demande.id) : [])
+    }
+
+    const handleSelectItem = (id) => {
+        setSelectedItems(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(itemId => itemId !== id)
+            } else {
+                return [...prev, id]
+            }
+        })
+    }
+
+    const handleDeleteSelected = () => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer les demandes sélectionnées ?')) {
+            router.post(route('demandes.delete-multiple'), {
+                ids: selectedItems
+            }, {
+                onSuccess: () => {
+                    setSelectedItems([])
+                    setSelectAll(false)
+                }
+            })
+        }
+    }
+
+  return (
+    <AdminLayout
+        header={
+                <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                        Gestion des demandes
+            </h2>
+                    {selectedItems.length > 0 && (
+                        <button
+                            onClick={handleDeleteSelected}
+                            className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+                        >
+                            Supprimer ({selectedItems.length})
+                        </button>
+                    )}
+                </div>
+            }
+        >
+            <Head title="Gestion des demandes" />
+
+        <div className="py-12">
+            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                        <div className="p-6">
+                            {/* Barre de recherche et filtres */}
+                            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label htmlFor="search" className="sr-only">Rechercher</label>
+                                    <div className="relative rounded-md shadow-sm">
+                                        <input
+                                            type="text"
+                                            name="search"
+                                            id="search"
+                                            value={search}
+                                            onChange={(e) => setSearch(e.target.value)}
+                                            className="block w-full rounded-md border-gray-300 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                            placeholder="Rechercher par nom, email, montant..."
+                                        />
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label htmlFor="status" className="sr-only">Statut</label>
+                                    <select
+                                        id="status"
+                                        name="status"
+                                        value={status}
+                                        onChange={(e) => setStatus(e.target.value)}
+                                        className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    >
+                                        <option value="">Tous les statuts</option>
+                                        <option value="en attente">En attente</option>
+                                        <option value="accepte">Approuvé</option>
+                                        <option value="rejecte">Rejeté</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8">
+                                                <input
+                                                    type="checkbox"
+                                                    className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                    checked={selectAll}
+                                                    onChange={handleSelectAll}
+                                                />
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                ID
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Nom du demandeur
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Email
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Montant
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Statut
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                Date de demande
+                                            </th>
+                                            <th scope="col" className="relative px-6 py-3">
+                                                <span className="sr-only">Actions</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200 bg-white">
+                                        {filteredDemandes.map((demande) => (
+                                            <tr key={demande.id} className={selectedItems.includes(demande.id) ? 'bg-gray-50' : ''}>
+                                                <td className="relative w-12 px-6 sm:w-16 sm:px-8">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                        checked={selectedItems.includes(demande.id)}
+                                                        onChange={() => handleSelectItem(demande.id)}
+                                                    />
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                    {demande.id}
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                                                    {demande.first_name} {demande.last_name}
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                    {demande.email}
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                    {demande.montant} FCFA
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm">
+                                                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                                                        demande.status === 'en attente' ? 'bg-yellow-100 text-yellow-800' :
+                                                        demande.status === 'accepte' ? 'bg-green-100 text-green-800' :
+                                                        'bg-red-100 text-red-800'
+                                                    }`}>
+                                                        {demande.status === 'en attente' ? 'En attente' :
+                                                         demande.status === 'accepte' ? 'Approuvé' : 'Rejeté'}
+                                                    </span>
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                                    {new Date(demande.created_at).toLocaleDateString('fr-FR')}
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium flex gap-1 items-center">
+                                                    <a
+                                                        href={route('demandes.edit', demande.id)}
+                                                        className="text-indigo-600 hover:text-indigo-900"
+                                                        title='details'
+                                                    >
+                                                        <Eye />
+                                                    </a>
+                                                    <a href="#"
+                                                        title='Supprimer'
+                                                    >
+                                                        <Trash />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Pagination */}
+                            {demandes.links.length > 3 && (
+                                <div className="mt-4 flex items-center justify-between">
+                                    <div className="flex-1 flex justify-between sm:hidden">
+                                        {demandes.prev_page_url && (
+                                            <a
+                                                href={demandes.prev_page_url}
+                                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                            >
+                                                Précédent
+                                            </a>
+                                        )}
+                                        {demandes.next_page_url && (
+                                            <a
+                                                href={demandes.next_page_url}
+                                                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                            >
+                                                Suivant
+                                            </a>
+                                        )}
+                                    </div>
+                                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                        <div>
+                                            <p className="text-sm text-gray-700">
+                                                Affichage de <span className="font-medium">{demandes.from}</span> à{' '}
+                                                <span className="font-medium">{demandes.to}</span> sur{' '}
+                                                <span className="font-medium">{demandes.total}</span> résultats
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                                {demandes.links.map((link, index) => (
+                                                    <a
+                                                        key={index}
+                                                        href={link.url}
+                                                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                                            link.active
+                                                                ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
+                                                                : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                                        }`}
+                                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                                    />
+                                                ))}
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                    </div>
+                </div>
+            </div>
+        </div>
+</AdminLayout>
+  )
+}
+
+export default AllDemandes
