@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes pour les demandes
     // Route::get('/demandes', [DemandeController::class, 'index'])->name('demandes.index');
     Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+    Route::put('/demandes/{demande}/destroy',[DemandeController::class,'destroy'])->name('demandes.destroy');
     Route::put('/demandes/{demande}', [DemandeController::class, 'update'])->name('demandes.update');
     Route::post('/demandes/delete-multiple', [DemandeController::class, 'deleteMultiple'])->name('demandes.delete-multiple');
 });

@@ -9,7 +9,8 @@ const Demande = () => {
         first_name:"",
         last_name:"",
         email:"",
-        montant:""
+        montant:"",
+        phone:""
     })
 
     useEffect(() => {
@@ -34,7 +35,8 @@ const Demande = () => {
                     first_name: "",
                     last_name: "",
                     email: "",
-                    montant: ""
+                    montant: "",
+                    phone:""
                 });
                 toast.success('🎉 Félicitations ! Votre demande a été envoyée avec succès.', {
                     position: "top-right",
@@ -134,7 +136,7 @@ const Demande = () => {
                         )}
                     </div>
 
-                    {/* <div className="mb-4">
+                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telephone">
                             Téléphone
                         </label>
@@ -143,10 +145,11 @@ const Demande = () => {
                             id="telephone"
                             type="tel"
                             placeholder="Votre numéro de téléphone"
-                            onChange={(e)=>{setData({first_name:e.target.value})}}
+                            onChange={(e)=>{setData({phone:e.target.value})}}
+                            value={data.phone}
 
                         />
-                    </div> */}
+                    </div>
 
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="montant">

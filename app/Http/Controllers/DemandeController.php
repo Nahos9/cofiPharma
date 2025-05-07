@@ -60,6 +60,13 @@ class DemandeController extends Controller
         }
     }
 
+    public function destroy(Demande $demande)
+    {
+        $demande["is_deleted"] = 1;
+        $demande->save();
+        return redirect()->route('demande.all')
+        ->with('success', 'La demande a été supprimé avec succès.');
+    }
     public function all(Request $request)
     {
         $query = Demande::with('user')
@@ -75,6 +82,7 @@ class DemandeController extends Controller
         ->when($request->status, function($query) use ($request) {
             $query->where('status', $request->status);
         })
+        ->where('is_deleted',0)
         ->latest();
 
     $demandes = $query->paginate(10)

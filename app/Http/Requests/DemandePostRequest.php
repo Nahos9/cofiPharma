@@ -23,9 +23,10 @@ class DemandePostRequest extends FormRequest
     {
         return [
             'first_name'=>'required|string|max:200',
-            'last_name'=>'required|string|max:200',
+            'last_name'=>'nullable|string|max:200',
             'email'=>'required|string|max:200',
             'montant'=>'required|string|max:200',
+            'phone'=>'nullable|string|max:25'
         ];
     }
 }
