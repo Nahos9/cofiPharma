@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DemandePostRequest;
 use App\Models\Demande;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DemandeController extends Controller
@@ -66,6 +67,24 @@ class DemandeController extends Controller
         $demande->save();
         return redirect()->route('demande.all')
         ->with('success', 'La demande a été supprimé avec succès.');
+    }
+    public function validateOrReject (Request $request,Demande $demande)
+    {
+        $user = Auth::user();
+        // dd($user->name);
+        $status = $request->input('status');
+        if($status == "accepte"){
+            $demande["status"] = $status;
+            $demande["user_validateur"] = $user->name;
+            $demande->save();
+            return redirect()->route('demande.all')->with('success','La demande a été validée avec success');
+        }elseif($status == "rejete"){
+            // dd($status);
+            $demande["status"] = $status;
+            $demande["user_validateur"] = $user->name;
+            $demande->save();
+            return redirect()->route('demande.all')->with('success','La demande a été rejetée avec success');
+        }
     }
     public function all(Request $request)
     {
