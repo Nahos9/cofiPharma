@@ -1,7 +1,7 @@
 import AdminLayout from '@/Layouts/AdminLayout'
 import { Head, Link, router } from '@inertiajs/react'
 import { Trash,Check,OctagonX   } from 'lucide-react'
-
+import { toast } from 'react-hot-toast'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 
@@ -87,13 +87,13 @@ const EditDemande = ({demande}) => {
                 status: "rejete"
             }, {
                 onSuccess: () => {
-                    setShowValidateModal(false)
-                    setDemandeToValidate(null)
-                    toast.success('La demande a été validée avec succès', {
+                    setShowRejectModal(false)
+                    setDemandeToReject(null)
+                    toast.success('La demande a été rejetée avec succès', {
                         duration: 4000,
                         position: 'top-right',
                         style: {
-                            background: '#10B981',
+                            background: '#EF4444',
                             color: '#fff',
                         },
                     })
@@ -102,7 +102,7 @@ const EditDemande = ({demande}) => {
                     if (errors.status === 419) {
                         window.location.href = route('login');
                     } else {
-                        toast.error('Une erreur est survenue lors de la validation', {
+                        toast.error('Une erreur est survenue lors du rejet', {
                             duration: 4000,
                             position: 'top-right',
                             style: {
