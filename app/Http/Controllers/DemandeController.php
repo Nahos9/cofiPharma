@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DemandePostRequest;
+use App\Mail\DemandeCreatedMail;
 use App\Models\Demande;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class DemandeController extends Controller
@@ -52,12 +55,23 @@ class DemandeController extends Controller
     public function store(DemandePostRequest $request)
     {
         $validate = $request->validated();
-        // dd($validate);
         try {
-            Demande::create($validate);
+            $demande = Demande::create($validate);
+
+            try {
+                Log::info('Tentative d\'envoi d\'email à : ' . $demande->email);
+                Mail::to($demande->email)
+                    ->send(new DemandeCreatedMail($demande));
+                Log::info('Email envoyé avec succès à : ' . $demande->email);
+            } catch (\Exception $mailException) {
+                Log::error('Erreur d\'envoi d\'email: ' . $mailException->getMessage());
+                // On continue l'exécution même si l'email échoue
+            }
+
             return redirect()->route('welcome')->with('success', 'Demande enregistrée avec succès.');
         } catch (\Exception $e) {
-            return redirect()->route('demande.index')->withErrors($e->getMessage());
+            Log::error('Erreur de création de demande: ' . $e->getMessage());
+            return redirect()->route('demande.index')->withErrors(['error' => 'Une erreur est survenue lors de l\'enregistrement de la demande.']);
         }
     }
 

@@ -1,5 +1,5 @@
 import NavigationHome from '@/Components/NavigationHome'
-import { Head, useForm } from '@inertiajs/react'
+import { Head, router, useForm } from '@inertiajs/react'
 import React, { useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -29,6 +29,7 @@ const Demande = () => {
 
     const handleSubmit = (e)=>{
         e.preventDefault()
+
         post(route('demandes.store'), {
             onSuccess: () => {
                 setData({
@@ -94,7 +95,7 @@ const Demande = () => {
                             id="nom"
                             type="text"
                             placeholder="Votre nom"
-                            onChange={(e)=>{setData('first_name', e.target.value)}}
+                            onChange={(e)=>{setData(prev => ({...prev, first_name:e.target.value}))}}
                             value={data.first_name}
                         />
                         {errors.first_name && (
@@ -111,7 +112,7 @@ const Demande = () => {
                             id="prenom"
                             type="text"
                             placeholder="Votre prénom"
-                            onChange={(e)=>{setData('last_name', e.target.value)}}
+                            onChange={(e)=>{setData(prev => ({...prev, last_name: e.target.value}))}}
                             value={data.last_name}
                         />
                         {errors.last_name && (
@@ -128,7 +129,7 @@ const Demande = () => {
                             id="email"
                             type="email"
                             placeholder="Votre email"
-                            onChange={(e)=>{setData('email', e.target.value)}}
+                            onChange={(e)=>{setData(prev => ({...prev, email:e.target.value}))}}
                             value={data.email}
                         />
                         {errors.email && (
@@ -145,7 +146,7 @@ const Demande = () => {
                             id="telephone"
                             type="tel"
                             placeholder="Votre numéro de téléphone"
-                            onChange={(e)=>{setData({phone:e.target.value})}}
+                            onChange={(e)=>{setData(prev => ({...prev, phone:e.target.value}))}}
                             value={data.phone}
 
                         />
@@ -161,7 +162,7 @@ const Demande = () => {
                             type="number"
                             step="0.01"
                             placeholder="Montant de la demande"
-                            onChange={(e)=>{setData('montant', e.target.value)}}
+                            onChange={(e)=>{setData(prev => ({...prev, montant:e.target.value}))}}
                             value={data.montant}
                         />
                         {errors.montant && (

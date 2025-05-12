@@ -23,8 +23,8 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <div className="h-screen  flex items-center justify-center">
-            <div className="w-full flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl">
-                <div className="bg-gradient-alldoc text-white p-8 md:w-1/2 flex flex-col items-center justify-center">
+            <div className="flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl">
+                <div className="bg-red-600 text-white p-8 md:w-1/2 flex flex-col items-center justify-center">
                     <div className="text-center mb-8">
                         <div className="flex items-center justify-center mb-6">
                             <i className="fas fa-heartbeat text-4xl mr-3 animate-pulse-slow"></i>
@@ -35,7 +35,7 @@ export default function Login({ status, canResetPassword }) {
                     </div>
 
                     <div className="relative w-full max-w-xs">
-                        <img src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg" alt="Médecin" className="w-full h-auto rounded-lg shadow-lg"/>
+                        <img src="/img/cofina.png" alt="Médecin" className="w-full h-auto rounded-lg shadow-lg"/>
                         <div className="absolute -bottom-4 -right-4 bg-white text-alldoc p-3 rounded-full shadow-lg">
                             <i className="fas fa-calendar-check text-2xl"></i>
                         </div>
@@ -43,7 +43,7 @@ export default function Login({ status, canResetPassword }) {
 
                     <div className="mt-12 text-center">
                         <p className="text-sm opacity-80">Pas encore inscrit ?</p>
-                        <button id="showRegister" className="mt-2 px-6 py-2 text-blue-600 bg-white text-alldoc rounded-full font-medium hover:bg-gray-100 transition duration-300">
+                        <button id="showRegister" className="mt-2 px-6 py-2 text-red-600 bg-white text-alldoc rounded-full font-medium hover:bg-gray-100 transition duration-300">
                             Créer un compte
                         </button>
                     </div>
@@ -90,7 +90,7 @@ export default function Login({ status, canResetPassword }) {
                                 <a href="#" className="text-sm text-alldoc hover:underline">Mot de passe oublié ?</a>
                             </div>
 
-                            <button type="submit" id="loginBtn" className="w-full bg-alldoc bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                            <button type="submit" id="loginBtn" className="w-full bg-alldoc bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center justify-center">
                                 <span id="loginText">Se connecter</span>
                                 <span id="loginSpinner" className="hidden ml-2">
                                     <i className="fas fa-spinner fa-spin"></i>
@@ -112,7 +112,7 @@ export default function Login({ status, canResetPassword }) {
                                     <span>Google</span>
                                 </button>
                                 <button type="button" className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-300">
-                                    <i className="fab fa-facebook-f text-blue-600 mr-2"></i>
+                                    <i className="fab fa-facebook-f text-red-600 mr-2"></i>
                                     <span>Facebook</span>
                                 </button>
                             </div> */}
@@ -176,7 +176,7 @@ export default function Login({ status, canResetPassword }) {
                                 </label>
                             </div>
 
-                            <button type="button" id="registerBtn" className="w-full bg-alldoc text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                            <button type="button" id="registerBtn" className="w-full bg-alldoc text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center justify-center">
                                 <span id="registerText">S'inscrire</span>
                                 <span id="registerSpinner" className="hidden ml-2">
                                     <i className="fas fa-spinner fa-spin"></i>
