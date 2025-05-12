@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DemandePostRequest;
 use App\Mail\DemandeCreatedMail;
+use App\Mail\DemandeMail;
+use App\Mail\ValidationMail;
 use App\Models\Demande;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,18 +61,18 @@ class DemandeController extends Controller
             $demande = Demande::create($validate);
 
             try {
-                Log::info('Tentative d\'envoi d\'email à : ' . $demande->email);
                 Mail::to($demande->email)
-                    ->send(new DemandeCreatedMail($demande));
-                Log::info('Email envoyé avec succès à : ' . $demande->email);
+                ->send(new DemandeCreatedMail($demande));
+                Mail::to("nahos.igalo@cofinacorp.com")
+                ->send(new DemandeMail($demande));
             } catch (\Exception $mailException) {
-                Log::error('Erreur d\'envoi d\'email: ' . $mailException->getMessage());
+
                 // On continue l'exécution même si l'email échoue
             }
 
             return redirect()->route('welcome')->with('success', 'Demande enregistrée avec succès.');
         } catch (\Exception $e) {
-            Log::error('Erreur de création de demande: ' . $e->getMessage());
+
             return redirect()->route('demande.index')->withErrors(['error' => 'Une erreur est survenue lors de l\'enregistrement de la demande.']);
         }
     }
@@ -91,12 +93,22 @@ class DemandeController extends Controller
             $demande["status"] = $status;
             $demande["user_validateur"] = $user->name;
             $demande->save();
+           try {
+            Mail::to($demande->email)->send(new ValidationMail($demande));
+           } catch (\Throwable $th) {
+
+           }
             return redirect()->route('demande.all')->with('success','La demande a été validée avec success');
         }elseif($status == "rejete"){
             // dd($status);
             $demande["status"] = $status;
             $demande["user_validateur"] = $user->name;
             $demande->save();
+            try {
+                Mail::to($demande->email)->send(new ValidationMail($demande));
+               } catch (\Throwable $th) {
+
+               }
             return redirect()->route('demande.all')->with('success','La demande a été rejetée avec success');
         }
     }

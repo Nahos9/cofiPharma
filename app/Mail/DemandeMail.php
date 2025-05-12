@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\Demande;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,29 +9,26 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class DemandeCreatedMail extends Mailable
+class DemandeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $demande;
-
+    /**
+     * Create a new message instance.
+     */
     public function __construct($demande)
     {
         $this->demande = $demande;
     }
 
-    // public function build()
-    // {
-    //     return $this->subject('Nouvelle demande enregistrée')
-    //                 ->view('emails.demande_created');
-    // }
     /**
      * Get the message envelope.
      */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Cofirmation de demande',
+            subject: 'Demande CofiPhrama',
         );
     }
 
@@ -42,7 +38,7 @@ class DemandeCreatedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.demande_created',
+            view: 'emails.demande',
         );
     }
 

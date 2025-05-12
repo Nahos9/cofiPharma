@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation de votre demande - CofiPharma</title>
+    <title>Nouvelle demande à traiter - CofiPharma</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
         .button {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #007bff;
+            background-color: #28a745;
             color: #ffffff;
             text-decoration: none;
             border-radius: 5px;
@@ -51,44 +51,63 @@
             padding: 20px;
             border-radius: 5px;
             margin: 20px 0;
+            border-left: 4px solid #28a745;
         }
         .details p {
             margin: 10px 0;
+        }
+        .priority {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .action-required {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-        <!-- <img src="{{ config('app.url') }}/img/cof.png" alt="CofiPharma Logo" class="logo"> -->
+            <!-- <img src="{{ config('app.url') }}/img/cof.png" alt="CofiPharma Logo" class="logo"> -->
         </div>
 
         <div class="content">
-            <h2>Nouvelle demande</h2>
+            <h2>Nouvelle demande à traiter</h2>
 
-            <p>Cher(e) {{ $demande->first_name }} {{ $demande->last_name }},</p>
-
-            <p>Vous avez récu une nouvelle demande de CofiPharma.</p>
-
-            <div class="details">
-                <h3>Détails de la demande :</h3>
-                <p><strong>Nom :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
-                <p><strong>Email :</strong> {{ $demande->email }}</p>
-                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p>
-                <p><strong>Montant demandé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
-                <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
+            <div class="action-required">
+                <p><strong>Action requise :</strong> Une nouvelle demande de financement nécessite votre attention.</p>
             </div>
 
-            <p>Notre équipe va étudier votre demande dans les plus brefs délais. Nous vous contacterons très prochainement pour vous donner une suite favorable.</p>
+            <div class="details">
+                <h3>Informations du demandeur :</h3>
+                <p><strong>Nom complet :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
+                <p><strong>Email :</strong> {{ $demande->email }}</p>
+                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p>
+                <p><strong>Montant demandé :</strong> <span class="priority">{{ number_format($demande->montant, 2, ',', ' ') }} FCFA</span></p>
+                <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
+                <p><strong>ID de la demande :</strong> #{{ $demande->id }}</p>
+            </div>
 
-            <p>Si vous avez des questions, n'hésitez pas à nous contacter :</p>
-            <ul>
-                <li>Par téléphone : +225 XX XX XX XX</li>
-                <li>Par email : contact@cofinacorp.com</li>
-            </ul>
+            <p>Veuillez traiter cette demande dans les plus brefs délais. Vous pouvez accéder à la demande complète via le tableau de bord administratif.</p>
+
+            <div style="text-align: center;">
+                <a href="{{ route('demande.all') }}" class="button">Accéder à la demande</a>
+            </div>
+
+            <p><strong>Rappel des étapes de traitement :</strong></p>
+            <ol>
+                <li>Vérifier les informations du demandeur</li>
+                <li>Analyser la demande</li>
+                <li>Prendre une décision (Approuver/Rejeter)</li>
+                <li>Notifier le demandeur</li>
+            </ol>
 
             <p>Cordialement,<br>
-            L'équipe CofiPharma</p>
+            Système de notification CofiPharma</p>
         </div>
 
         <div class="footer">
