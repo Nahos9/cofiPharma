@@ -1,6 +1,6 @@
 import AdminLayout from '@/Layouts/AdminLayout'
 import { Head, Link, router } from '@inertiajs/react'
-import { Trash,Check,OctagonX   } from 'lucide-react'
+import { Trash,Check,OctagonX, Download, FileText, Image } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
@@ -115,6 +115,22 @@ const EditDemande = ({demande}) => {
             })
         }
     }
+
+    const getFileIcon = (type) => {
+        if (type.startsWith('image/')) {
+            return <Image className="h-6 w-6 text-blue-500" />;
+        }
+        return <FileText className="h-6 w-6 text-blue-500" />;
+    };
+
+    const formatFileSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
   return (
     <AdminLayout
             header={
@@ -235,6 +251,45 @@ const EditDemande = ({demande}) => {
                                         </dd>
                                     </div>
                                 </dl>
+                            </div>
+
+                            <div className="mt-8">
+                                <h3 className="text-lg font-medium leading-6 text-gray-900">Pièces jointes</h3>
+                                <div className="mt-5">
+                                    {demande.piece_jointes && demande.piece_jointes.length > 0 ? (
+                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                            {demande.piece_jointes.map((piece) => (
+                                                <div key={piece.id} className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm hover:border-gray-400">
+                                                    <div className="flex-shrink-0">
+                                                        {getFileIcon(piece.type_mime)}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm font-medium text-gray-900 truncate">
+                                                            {piece.nom_fichier}
+                                                        </p>
+                                                        <p className="text-sm text-gray-500">
+                                                            {formatFileSize(piece.taille_fichier)}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex-shrink-0">
+                                                        <a
+                                                            href={`/storage/${piece.chemin_fichier}`}
+                                                            download={piece.nom_fichier}
+                                                            className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                        >
+                                                            <Download className="h-4 w-4 mr-1" />
+                                                            Télécharger
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-4">
+                                            <p className="text-gray-500">Aucune pièce jointe disponible</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

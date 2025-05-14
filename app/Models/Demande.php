@@ -20,4 +20,9 @@ class Demande extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function pieceJointes()
+    {
+        return $this->hasMany(PieceJointe::class);
+    }
 }

@@ -1,16 +1,18 @@
 import NavigationHome from '@/Components/NavigationHome'
 import { Head, router, useForm } from '@inertiajs/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const Demande = () => {
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const {data,setData,post,processing,errors} = useForm({
         first_name:"",
         last_name:"",
         email:"",
         montant:"",
-        phone:""
+        phone:"",
+        files: []
     })
 
     useEffect(() => {
@@ -27,18 +29,38 @@ const Demande = () => {
         }
     }, [errors]);
 
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+        setData(prev => ({...prev, files: files}));
+    };
+
     const handleSubmit = (e)=>{
         e.preventDefault()
 
+        const formData = new FormData();
+        formData.append('first_name', data.first_name);
+        formData.append('last_name', data.last_name);
+        formData.append('email', data.email);
+        formData.append('montant', data.montant);
+        formData.append('phone', data.phone);
+
+        data.files.forEach((file, index) => {
+            formData.append(`files[${index}]`, file);
+        });
+
         post(route('demandes.store'), {
+            forceFormData: true,
             onSuccess: () => {
                 setData({
                     first_name: "",
                     last_name: "",
                     email: "",
                     montant: "",
-                    phone:""
+                    phone: "",
+                    files: []
                 });
+                setSelectedFiles([]);
                 toast.success('🎉 Félicitations ! Votre demande a été envoyée avec succès.', {
                     position: "top-right",
                     autoClose: 5000,
@@ -170,17 +192,35 @@ const Demande = () => {
                         )}
                     </div>
 
-                    {/* <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
-                            Message
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="files">
+                            Documents (PDF, Images)
                         </label>
-                        <textarea
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="message"
-                            rows="4"
-                            placeholder="Décrivez votre demande..."
-                        ></textarea>
-                    </div> */}
+                        <input
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.files ? 'border-red-500' : ''}`}
+                            id="files"
+                            type="file"
+                            multiple
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={handleFileChange}
+                        />
+                        {errors.files && (
+                            <p className="text-red-500 text-xs italic mt-1">{errors.files}</p>
+                        )}
+                        {selectedFiles.length > 0 && (
+                            <div className="mt-2">
+                                <p className="text-sm text-gray-600">Fichiers sélectionnés :</p>
+                                <ul className="mt-1 text-sm text-gray-500">
+                                    {selectedFiles.map((file, index) => (
+                                        <li key={index} className="flex items-center">
+                                            <span className="mr-2">•</span>
+                                            {file.name} ({(file.size / 1024).toFixed(2)} KB)
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="flex items-center justify-center sm:justify-between">
                         <button

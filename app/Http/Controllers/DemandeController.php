@@ -7,10 +7,12 @@ use App\Mail\DemandeCreatedMail;
 use App\Mail\DemandeMail;
 use App\Mail\ValidationMail;
 use App\Models\Demande;
+use App\Models\PieceJointe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DemandeController extends Controller
@@ -23,7 +25,7 @@ class DemandeController extends Controller
     public function edit(Demande $demande)
     {
         return Inertia::render('demandes/EditDemande', [
-            'demande' => $demande->load('user')
+            'demande' => $demande->load(['user', 'pieceJointes'])
         ]);
     }
 
@@ -54,27 +56,58 @@ class DemandeController extends Controller
             ->with('success', 'Les demandes ont été supprimées avec succès.');
     }
 
-    public function store(DemandePostRequest $request)
+    public function store(Request $request)
     {
-        $validate = $request->validated();
-        try {
-            $demande = Demande::create($validate);
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'montant' => 'required|numeric',
+            'phone' => 'required|string|max:20',
+            'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240' // max 10MB par fichier
+        ]);
 
-            try {
-                Mail::to($demande->email)
-                ->send(new DemandeCreatedMail($demande));
-                Mail::to("nahos.igalo@cofinacorp.com")
-                ->send(new DemandeMail($demande));
-            } catch (\Exception $mailException) {
+        // Création de la demande
+        $demande = Demande::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'montant' => $request->montant,
+            'phone' => $request->phone,
+        ]);
 
-                // On continue l'exécution même si l'email échoue
+        // Traitement des fichiers
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Stockage du fichier
+                $path = $file->store('piece_jointes/' . $demande->id, 'public');
+
+                // Création de l'enregistrement dans la table piece_jointes
+                PieceJointe::create([
+                    'demande_id' => $demande->id,
+                    'nom_fichier' => $file->getClientOriginalName(),
+                    'chemin_fichier' => $path,
+                    'type_mime' => $file->getMimeType(),
+                    'taille_fichier' => $file->getSize()
+                ]);
             }
-
-            return redirect()->route('welcome')->with('success', 'Demande enregistrée avec succès.');
-        } catch (\Exception $e) {
-
-            return redirect()->route('demande.index')->withErrors(['error' => 'Une erreur est survenue lors de l\'enregistrement de la demande.']);
         }
+
+        try {
+            // Charger la relation pieceJointes avant d'envoyer l'email
+            $demande->load('pieceJointes');
+
+            // Envoyer l'email à l'administrateur
+            Mail::to("nahos.igalo@cofinacorp.com")->send(new DemandeMail($demande));
+
+            // Envoyer l'email de confirmation au demandeur
+            Mail::to($demande->email)->send(new DemandeCreatedMail($demande));
+        } catch (\Exception $e) {
+            // Log l'erreur mais continuer l'exécution
+            \Log::error('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Demande créée avec succès');
     }
 
     public function destroy(Demande $demande)

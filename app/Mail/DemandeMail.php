@@ -4,16 +4,19 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Attachment;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class DemandeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $demande;
+
     /**
      * Create a new message instance.
      */
@@ -28,7 +31,7 @@ class DemandeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Demande CofiPhrama',
+            subject: 'Nouvelle demande CofiPharma à traiter',
         );
     }
 
@@ -49,6 +52,19 @@ class DemandeMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $attachments = [];
+
+        if ($this->demande->pieceJointes) {
+            foreach ($this->demande->pieceJointes as $pieceJointe) {
+                $path = Storage::disk('public')->path($pieceJointe->chemin_fichier);
+                if (file_exists($path)) {
+                    $attachments[] = Attachment::fromPath($path)
+                        ->as($pieceJointe->nom_fichier)
+                        ->withMime($pieceJointe->type_mime);
+                }
+            }
+        }
+
+        return $attachments;
     }
 }

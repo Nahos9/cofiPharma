@@ -5,6 +5,8 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { Eye,Mail,Lock,LoaderPinwheel    } from 'lucide-react';
+
 import "./Login.css"
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -58,10 +60,11 @@ export default function Login({ status, canResetPassword }) {
                             <div>
                                 <label for="email" className="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
                                 <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i className="fas fa-envelope text-gray-400"></i>
+                                    <div className="absolute inset-y-0  left-0 pl-3 flex items-center pointer-events-none">
+                                        {/* <i className="fas fa-envelope text-gray-400"></i> */}
+                                        <Mail className='text-gray-400' />
                                     </div>
-                                    <input type="email" id="email" className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-alldoc input-focus transition duration-300" placeholder="votre@email.com"
+                                    <input type="email" id="email" className="pl-10 w-full px-1 py-3 rounded-lg border border-gray-300 focus:border-alldoc input-focus transition duration-300" placeholder="votre@email.com"
                                     onChange={(e) => setData('email', e.target.value)}
                                     />
                                 </div>
@@ -71,13 +74,15 @@ export default function Login({ status, canResetPassword }) {
                                 <label for="password" className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i className="fas fa-lock text-gray-400"></i>
+                                        {/* <i className="fas fa-lock text-gray-400"></i> */}
+                                        <Lock className='text-gray-400' />
                                     </div>
                                     <input type="password" id="password" className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-alldoc input-focus transition duration-300" placeholder="••••••••"
                                     onChange={(e) => setData('password', e.target.value)}
                                     />
                                     <button className="absolute right-3 top-3 text-gray-400 hover:text-gray-600" type="button" id="togglePassword">
-                                        <i className="fas fa-eye"></i>
+                                        {/* <i className="fas fa-eye"></i> */}
+                                        <Eye />
                                     </button>
                                 </div>
                             </div>
@@ -93,7 +98,8 @@ export default function Login({ status, canResetPassword }) {
                             <button type="submit" id="loginBtn" className="w-full bg-alldoc bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center justify-center">
                                 <span id="loginText">Se connecter</span>
                                 <span id="loginSpinner" className="hidden ml-2">
-                                    <i className="fas fa-spinner fa-spin"></i>
+                                    {/* <i className="fas fa-spinner fa-spin"></i> */}
+                                    <LoaderPinwheel />
                                 </span>
                             </button>
 
