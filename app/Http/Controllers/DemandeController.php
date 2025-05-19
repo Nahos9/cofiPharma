@@ -61,6 +61,7 @@ class DemandeController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'numero_compte' => 'required|string|max:50',
             'email' => 'required|email|max:255',
             'montant' => 'required|numeric',
             'phone' => 'required|string|max:20',
@@ -72,6 +73,7 @@ class DemandeController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'numero_compte' => $request->numero_compte,
             'montant' => $request->montant,
             'phone' => $request->phone,
         ]);

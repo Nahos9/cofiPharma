@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
+            $table->string('numero_compte');
             $table->string('montant');
             $table->string('status')->default('en attente');
             $table->string('user_validateur')->nullable();

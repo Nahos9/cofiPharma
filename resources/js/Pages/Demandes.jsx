@@ -11,6 +11,7 @@ const Demande = () => {
         last_name:"",
         email:"",
         montant:"",
+        numero_compte:"",
         phone:"",
         files: []
     })
@@ -42,6 +43,7 @@ const Demande = () => {
         formData.append('first_name', data.first_name);
         formData.append('last_name', data.last_name);
         formData.append('email', data.email);
+        formData.append('numero_compte', data.numero_compte);
         formData.append('montant', data.montant);
         formData.append('phone', data.phone);
 
@@ -58,6 +60,7 @@ const Demande = () => {
                     email: "",
                     montant: "",
                     phone: "",
+                    numero_compte: "",
                     files: []
                 });
                 setSelectedFiles([]);
@@ -158,7 +161,22 @@ const Demande = () => {
                             <p className="text-red-500 text-xs italic mt-1">{errors.email}</p>
                         )}
                     </div>
-
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="numero_compte">
+                            Numéro de compte
+                        </label>
+                        <input
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''}`}
+                            id="numero_compte"
+                            type="numero_compte"
+                            placeholder="Votre numéro de compte"
+                            onChange={(e)=>{setData(prev => ({...prev, numero_compte:e.target.value}))}}
+                            value={data.numero_compte}
+                        />
+                        {errors.numero_compte && (
+                            <p className="text-red-500 text-xs italic mt-1">{errors.numero_compte}</p>
+                        )}
+                    </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telephone">
                             Téléphone

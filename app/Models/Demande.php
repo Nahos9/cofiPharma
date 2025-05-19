@@ -9,7 +9,7 @@ class Demande extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['first_name', 'last_name', 'email', 'montant','status','user_validateur','is_deleted','user_who_deleted','phone'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'montant','status','numero_compte','user_validateur','is_deleted','user_who_deleted','phone'];
 
     protected $casts = [
         'created_at' => 'datetime',
