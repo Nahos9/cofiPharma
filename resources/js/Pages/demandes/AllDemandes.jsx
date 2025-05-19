@@ -239,7 +239,7 @@ const AllDemandes = ({ demandes }) => {
                                         <option value="">Tous les statuts</option>
                                         <option value="en attente">En attente</option>
                                         <option value="accepte">Approuvé</option>
-                                        <option value="rejecte">Rejeté</option>
+                                        <option value="rejete">Rejeté</option>
                                     </select>
                                 </div>
                             </div>
@@ -329,13 +329,13 @@ const AllDemandes = ({ demandes }) => {
                                                     >
                                                         <Eye />
                                                     </a>
-                                                    <button
+                                                   {demande?.status == "en attente" &&  ( <button
                                                         onClick={() => handleDeleteClick(demande)}
                                                         className="text-red-600 hover:text-red-900"
                                                         title='Supprimer'
                                                     >
                                                         <Trash />
-                                                    </button>
+                                                    </button>)}
                                                 </td>
                                             </tr>
                                         ))}
