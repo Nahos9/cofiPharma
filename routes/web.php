@@ -34,4 +34,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/demandes/delete-multiple', [DemandeController::class, 'deleteMultiple'])->name('demandes.delete-multiple');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demande.all');
+    // Autres routes admin
+});
+
+// Routes d'administration
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
+    })->name('dashboard');
+
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
+});
+Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('responsable_ritel/DashboardRitel');
+    })->name('dashboard');
+
+    Route::get('/demandes/all', [DemandeController::class, 'allDemandesResponsable'])->name('demandes.all');
+
+});
+
+Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->name('operation.')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('operation/DashboardOperation');
+    })->name('dashboard');
+
+    Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demandes.all');
+    Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+
+});
+
 require __DIR__.'/auth.php';

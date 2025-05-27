@@ -48,13 +48,38 @@ class User extends Authenticatable
         ];
     }
 
-    public function isCassiere(): bool
+    public function hasRole($role)
     {
-        return $this->role === 'cassiere';
+        return $this->role === $role;
     }
 
-    public function isResponsableRitel(): bool
+    public function hasAnyRole($roles)
     {
-        return $this->role === 'responsable_ritel';
+        return in_array($this->role, $roles);
+    }
+
+    public function hasAllRoles($roles)
+    {
+        return $this->role === 'admin'; // L'admin a tous les rôles
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCaissier()
+    {
+        return $this->role === 'caissier';
+    }
+
+    public function isResponsableRetail()
+    {
+        return $this->role === 'responsable_retail';
+    }
+
+    public function isOperation()
+    {
+        return $this->role === 'operation';
     }
 }

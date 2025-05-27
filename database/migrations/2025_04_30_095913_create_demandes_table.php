@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('numero_compte');
             $table->string('montant');
             $table->string('status')->default('en attente');
-            $table->string('user_validateur')->nullable();
+            $table->string('user_validateur_level')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->string('user_who_deleted')->nullable();
             $table->string('phone')->nullable();

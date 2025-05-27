@@ -24,9 +24,15 @@ class DemandeController extends Controller
 
     public function edit(Demande $demande)
     {
-        return Inertia::render('demandes/EditDemande', [
-            'demande' => $demande->load(['user', 'pieceJointes'])
-        ]);
+        if(Auth::user()->role == "responsable_ritel"){
+            return Inertia::render('responsable_ritel/demandes/EditDemande', [
+                'demande' => $demande->load(['user', 'pieceJointes'])
+            ]);
+        }else{
+            return Inertia::render('operation/demandes/EditDemande', [
+                'demande' => $demande->load(['user', 'pieceJointes'])
+            ]);
+        }
     }
 
     public function update(Request $request, Demande $demande)
@@ -76,6 +82,7 @@ class DemandeController extends Controller
             'numero_compte' => $request->numero_compte,
             'montant' => $request->montant,
             'phone' => $request->phone,
+            'user_validateur_level' => "responsable_ritel",
         ]);
 
         // Traitement des fichiers
@@ -124,28 +131,40 @@ class DemandeController extends Controller
         $user = Auth::user();
         // dd($user->name);
         $status = $request->input('status');
-        if($status == "accepte"){
+        // dd($status);
+        if($status == "accepte" && $user->role == "responsable_ritel"){
             $demande["status"] = $status;
-            $demande["user_validateur"] = $user->name;
+            $demande["user_validateur_level"] = "operation";
             $demande->save();
-           try {
-            Mail::to($demande->email)->send(new ValidationMail($demande));
-           } catch (\Throwable $th) {
+        //    try {
+        //     Mail::to($demande->email)->send(new ValidationMail($demande));
+        //    } catch (\Throwable $th) {
 
-           }
-            return redirect()->route('demande.all')->with('success','La demande a été validée avec success');
-        }elseif($status == "rejete"){
+        //    }
+            return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été validée avec success');
+        }elseif($status == "rejete" && $user->role == "responsable_ritel"){
             // dd($status);
             $demande["status"] = $status;
-            $demande["user_validateur"] = $user->name;
+            $demande["user_validateur_level"] = $user->role;
             $demande->save();
-            try {
-                Mail::to($demande->email)->send(new ValidationMail($demande));
-               } catch (\Throwable $th) {
+            // try {
+            //     Mail::to($demande->email)->send(new ValidationMail($demande));
+            //    } catch (\Throwable $th) {
 
-               }
-            return redirect()->route('demande.all')->with('success','La demande a été rejetée avec success');
+            //    }
+            return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été rejetée avec success');
+        }elseif($status == "debloque" && $user->role == "operation"){
+            $demande["status"] = $status;
+            $demande["user_validateur_level"] = $user->role;
+            $demande->save();
+            return redirect()->route('operation.demandes.all')->with('success','La demande a été debloquée avec success');
+        }elseif($status == "rejete" && $user->role == "operation"){
+            $demande["status"] = $status;
+            $demande["user_validateur_level"] = $user->role;
+            $demande->save();
+            return redirect()->route('operation.demandes.all')->with('success','La demande a été rejetée avec success');
         }
+
     }
     public function all(Request $request)
     {
@@ -165,12 +184,46 @@ class DemandeController extends Controller
         ->where('is_deleted',0)
         ->latest();
 
-    $demandes = $query->paginate(10)
-        ->withQueryString();
+        $demandes = $query->paginate(10)
+            ->withQueryString();
 
-    return Inertia::render('demandes/AllDemandes', [
-        'demandes' => $demandes,
-        'filters' => $request->only(['search', 'status'])
+        if(Auth::user()->role == "operation"){
+                return Inertia::render('operation/demandes/AllDemandes', [
+                    'demandes' => $demandes,
+                    'filters' => $request->only(['search', 'status'])
+                ]);
+        }
+        return Inertia::render('demandes/AllDemandes', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
+         ]);
+
+    }
+
+    public function allDemandesResponsable(Request $request)
+    {
+        $query = Demande::with('user')
+        ->when($request->search, function($query) use ($request) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%");
+                })
+                ->orWhere('montant', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%");
+            });
+        })
+        ->when($request->status, function($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->where('is_deleted',0)
+        ->latest();
+
+        $demandes = $query->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('responsable_ritel/demandes/AllDemandes', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
     ]);
     }
 }

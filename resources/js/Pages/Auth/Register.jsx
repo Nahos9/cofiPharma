@@ -11,6 +11,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        role:''
     });
 
     const submit = (e) => {
@@ -21,6 +22,24 @@ export default function Register() {
         });
     };
 
+    const roles = [
+        {
+            id: 1,
+            name: 'admin'
+        },
+        {
+            id: 2,
+            name: 'cassiere'
+        },
+        {
+            id: 3,
+            name: 'responsable_ritel'
+        },
+        {
+            id: 4,
+            name: 'operation'
+        }
+    ]
     return (
         <GuestLayout>
             <Head title="Register" />
@@ -59,7 +78,14 @@ export default function Register() {
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
-
+                <div className="mt-4">
+                    <InputLabel htmlFor="role" value="Role" />
+                    <select name="role" id="role" className="mt-1 block w-full" onChange={(e) => setData('role', e.target.value)}>
+                        {roles.map((role) => (
+                            <option value={role.name}>{role.name}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />
 
@@ -76,7 +102,6 @@ export default function Register() {
 
                     <InputError message={errors.password} className="mt-2" />
                 </div>
-
                 <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"

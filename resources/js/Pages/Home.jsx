@@ -11,7 +11,7 @@ export default function Home({ auth }) {
                             {auth.user ? (
                                 <div>
                                     <p>Bonjour {auth.user.name} !</p>
-                                    {auth.user.isResponsableRitel() && (
+                                    {auth.user?.hasRole('responsable_ritel') && (
                                         <div className="mt-4">
                                             <h2 className="text-xl font-semibold mb-2">Fonctionnalités Responsable Retail :</h2>
                                             <ul className="list-disc pl-5">
