@@ -136,32 +136,42 @@ class DemandeController extends Controller
             $demande["status"] = $status;
             $demande["user_validateur_level"] = "operation";
             $demande->save();
-        //    try {
-        //     Mail::to($demande->email)->send(new ValidationMail($demande));
-        //    } catch (\Throwable $th) {
+           try {
+            Mail::to($demande->email)->send(new ValidationMail($demande));
+           } catch (\Throwable $th) {
 
-        //    }
+           }
             return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été validée avec success');
         }elseif($status == "rejete" && $user->role == "responsable_ritel"){
             // dd($status);
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
             $demande->save();
-            // try {
-            //     Mail::to($demande->email)->send(new ValidationMail($demande));
-            //    } catch (\Throwable $th) {
+            try {
+                Mail::to($demande->email)->send(new ValidationMail($demande));
+               } catch (\Throwable $th) {
 
-            //    }
+               }
             return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été rejetée avec success');
         }elseif($status == "debloque" && $user->role == "operation"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
             $demande->save();
+            try {
+                Mail::to($demande->email)->send(new ValidationMail($demande));
+               } catch (\Throwable $th) {
+
+               }
             return redirect()->route('operation.demandes.all')->with('success','La demande a été debloquée avec success');
         }elseif($status == "rejete" && $user->role == "operation"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
             $demande->save();
+            try {
+                Mail::to($demande->email)->send(new ValidationMail($demande));
+               } catch (\Throwable $th) {
+
+               }
             return redirect()->route('operation.demandes.all')->with('success','La demande a été rejetée avec success');
         }
 
@@ -225,5 +235,122 @@ class DemandeController extends Controller
             'demandes' => $demandes,
             'filters' => $request->only(['search', 'status'])
     ]);
+    }
+
+    public function statistics(Request $request)
+    {
+        $dateDebut = $request->input('date_debut', now()->subDays(7)->format('Y-m-d'));
+        $dateFin = $request->input('date_fin', now()->format('Y-m-d'));
+
+        // Statistiques des demandes par jour
+        $demandesParJour = Demande::whereBetween('created_at', [$dateDebut, $dateFin])
+            ->where('is_deleted', 0)
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Statistiques par statut
+        $statistiquesParStatut = Demande::whereBetween('created_at', [$dateDebut, $dateFin])
+            ->where('is_deleted', 0)
+            ->selectRaw('status, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('status')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->status => [
+                    'total' => $item->total,
+                    'montant_total' => $item->montant_total
+                ]];
+            })
+            ->toArray();
+
+        // Calcul des totaux
+        $totalDemandes = array_sum(array_column($statistiquesParStatut, 'total'));
+        $montantTotal = array_sum(array_column($statistiquesParStatut, 'montant_total'));
+
+        $demandesEnAttente = $statistiquesParStatut['en attente']['total'] ?? 0;
+        $demandesValidees = $statistiquesParStatut['accepte']['total'] ?? 0;
+        $demandesRejetees = $statistiquesParStatut['rejete']['total'] ?? 0;
+        $demandesDebloquees = $statistiquesParStatut['debloque']['total'] ?? 0;
+
+        // Montants par statut
+        $montantEnAttente = $statistiquesParStatut['en attente']['montant_total'] ?? 0;
+        $montantValide = $statistiquesParStatut['accepte']['montant_total'] ?? 0;
+        $montantRejete = $statistiquesParStatut['rejete']['montant_total'] ?? 0;
+        $montantDebloque = $statistiquesParStatut['debloque']['montant_total'] ?? 0;
+
+        // Moyenne des montants
+        $moyenneMontant = $totalDemandes > 0 ? $montantTotal / $totalDemandes : 0;
+
+        return Inertia::render('Statistics', [
+            'statistiques' => [
+                'demandesParJour' => $demandesParJour,
+                'totalDemandes' => $totalDemandes,
+                'montantTotal' => $montantTotal,
+                'moyenneMontant' => $moyenneMontant,
+                'demandesEnAttente' => $demandesEnAttente,
+                'demandesValidees' => $demandesValidees,
+                'demandesRejetees' => $demandesRejetees,
+                'demandesDebloquees' => $demandesDebloquees,
+                'montantEnAttente' => $montantEnAttente,
+                'montantValide' => $montantValide,
+                'montantRejete' => $montantRejete,
+                'montantDebloque' => $montantDebloque,
+                'filtres' => [
+                    'date_debut' => $dateDebut,
+                    'date_fin' => $dateFin
+                ]
+            ]
+        ]);
+    }
+
+    public function exportStatistics(Request $request)
+    {
+        $dateDebut = $request->input('date_debut', now()->subDays(7)->format('Y-m-d'));
+        $dateFin = $request->input('date_fin', now()->format('Y-m-d'));
+
+        $demandes = Demande::whereBetween('created_at', [$dateDebut, $dateFin])
+            ->where('is_deleted', 0)
+            ->with('user')
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="statistiques_demandes.csv"',
+        ];
+
+        $callback = function() use ($demandes) {
+            $file = fopen('php://output', 'w');
+
+            // En-têtes
+            fputcsv($file, [
+                'Date',
+                'Nom',
+                'Prénom',
+                'Email',
+                'Numéro de compte',
+                'Montant',
+                'Statut',
+                'Téléphone'
+            ]);
+
+            // Données
+            foreach ($demandes as $demande) {
+                fputcsv($file, [
+                    $demande->created_at->format('Y-m-d H:i:s'),
+                    $demande->last_name,
+                    $demande->first_name,
+                    $demande->email,
+                    $demande->numero_compte,
+                    $demande->montant,
+                    $demande->status,
+                    $demande->phone
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

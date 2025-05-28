@@ -86,8 +86,8 @@
 
             @if($demande->status === 'accepte')
                 <div class="status-approved">
-                    <h3>🎉 Félicitations ! Votre demande a été approuvée</h3>
-                    <p>Nous avons le plaisir de vous informer que votre demande de financement a été validée.</p>
+                    <h3>🎉 Félicitations ! Votre demande a été validée</h3>
+                    <p>Nous avons le plaisir de vous informer que votre demande de financement a été validée et nos équipes sont en train de la traiter.</p>
                 </div>
 
                 <div class="details">
@@ -100,10 +100,12 @@
 
                 <p>Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités de votre financement.</p>
 
-            @else
+            @elseif($demande->status === 'rejete')
                 <div class="status-rejected">
                     <h3>Décision concernant votre demande</h3>
                     <p>Nous regrettons de vous informer que votre demande de financement n'a pas pu être approuvée à ce stade.</p>
+                    <p>Nous vous invitons à nous contacter pour plus d'informations sur les raisons de cette décision et pour discuter des possibilités de révision de votre demande.</p>
+                    <p>Pour toute question, n'hésitez pas à nous contacter :</p>
                 </div>
 
                 <div class="details">
@@ -113,20 +115,23 @@
                     <p><strong>Date de la décision :</strong> {{ $demande->updated_at->format('d/m/Y H:i') }}</p>
                     <p><strong>Décision prise par :</strong> {{ $demande->user_validateur }}</p>
                 </div>
+            @elseif($demande->status === 'debloque')
+                <div class="status-approved">
+                    <h3>🎉 Félicitations ! Votre demande a été approuvée</h3>
+                    <p>Nous avons le plaisir de vous informer que votre demande de financement a été validée et les fonds sont déjà à votre disposition.</p>
+                </div>
 
-                <p>Nous vous invitons à nous contacter pour plus d'informations sur les raisons de cette décision et pour discuter des possibilités de révision de votre demande.</p>
-            @endif
+                <div class="details">
 
-            <p>Pour toute question, n'hésitez pas à nous contacter :</p>
-            <ul>
-                <li>Par téléphone : +225 XX XX XX XX</li>
-                <li>Par email : contact@cofinacorp.com</li>
-            </ul>
+                    <ul>
+                        <li>Par téléphone : +225 XX XX XX XX</li>
+                        <li>Par email : contact@cofinacorp.com</li>
+                    </ul>
 
             <p>Cordialement,<br>
             L'équipe CofiPharma</p>
         </div>
-
+          @endif
         <div class="footer">
             <p>© {{ date('Y') }} CofiPharma. Tous droits réservés.</p>
             <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
