@@ -29,11 +29,11 @@ export default function FooterHome() {
                                     Faire une demande
                                 </Link>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
                                     Contact
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 
@@ -43,14 +43,14 @@ export default function FooterHome() {
                         <div className="space-y-2">
                             <div className="flex items-center gap-2 text-gray-300">
                                 <Mail className="w-5 h-5" />
-                                <a href="mailto:contact@cofipharma.com" className="hover:text-white transition-colors">
-                                    contact@cofipharma.com
+                                <a href="mailto:service.client.ga@cofinacorp.com" className="hover:text-white transition-colors">
+                                    service.client.ga@cofinacorp.com
                                 </a>
                             </div>
                             <div className="flex items-center gap-2 text-gray-300">
                                 <Phone className="w-5 h-5" />
                                 <a href="tel:+1234567890" className="hover:text-white transition-colors">
-                                    +1 234 567 890
+                                    +241 65 99 01 46
                                 </a>
                             </div>
                         </div>

@@ -46,8 +46,8 @@ ChartJS.register(
     ArcElement
 );
 
-const StatCard = ({ title, value, subtitle, color = 'primary' }) => (
-    <Card elevation={2} sx={{ height: '100%' }}>
+const StatCard = ({ title, value, subtitle, color = 'primary', bg='' }) => (
+    <Card elevation={2} sx={{ height: '100%' }} style={{ backgroundColor: bg }}>
         <CardContent>
             <Typography color="textSecondary" gutterBottom variant="subtitle2">
                 {title}
@@ -172,11 +172,20 @@ const DashboardRitel = ({ statistiques }) => {
             <Head title="Tableau de bord" />
 
             <Paper elevation={0} sx={{ p: 2, mb: 3 }}>
-                <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    alignItems={{ xs: 'stretch', sm: 'center' }}
+                    justifyContent="space-between"
+                >
                     <Typography variant="h6" component="h2">
                         Filtres
                     </Typography>
-                    <Stack direction="row" spacing={5}>
+                    <Stack
+                        direction={{ xs: 'column', sm: 'row' }}
+                        spacing={2}
+                        width={{ xs: '100%', sm: 'auto' }}
+                    >
                         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fr}>
                             <DatePicker
                                 label="Date de début"
@@ -195,15 +204,14 @@ const DashboardRitel = ({ statistiques }) => {
                             variant="contained"
                             startIcon={<FilterListIcon />}
                             onClick={handleFilterSubmit}
-                            sx={{ minWidth: '100px', whiteSpace: 'nowrap' }}
+                            fullWidth
                         >
                             Filtrer
                         </Button>
                         <Button
                             variant="outlined"
-                            // startIcon={<DownloadIcon />}
                             onClick={handleExport}
-                            sx={{ minWidth: '100px', whiteSpace: 'nowrap' }}
+                            fullWidth
                         >
                             Exporter
                         </Button>
@@ -211,53 +219,61 @@ const DashboardRitel = ({ statistiques }) => {
                 </Stack>
             </Paper>
 
-           <div className="flex justify-between gap-1">
-              <div className="flex-1">
-              <StatCard
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
                         title="Total des demandes"
                         value={statistiques?.totalDemandes}
                         subtitle={`Montant total: ${statistiques?.montantTotal.toLocaleString()} FCFA`}
+                        bg=""
                     />
-              </div>
-              <div className="flex-1">
-              <StatCard
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
                         title="Demandes en attente"
                         value={statistiques?.demandesEnAttente}
                         subtitle={`Montant: ${statistiques?.montantEnAttente.toLocaleString()} FCFA`}
                         color="warning.main"
+                        bg="#FFCD56"
                     />
-              </div>
-              <div className="flex-1">
-              <StatCard
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
                         title="Demandes validées"
                         value={statistiques?.demandesValidees}
                         subtitle={`Montant: ${statistiques?.montantValide.toLocaleString()} FCFA`}
                         color="success.main"
+                        bg='#4bc0c0'
                     />
-              </div>
-              <div className="flex-1">
-              <StatCard
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Demandes débloquées"
+                        value={statistiques?.demandesDebloquees}
+                        subtitle={`Montant: ${statistiques?.montantDebloque.toLocaleString()} FCFA`}
+                        color="info.main"
+                        bg='#36A2EB'
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
                         title="Demandes rejetées"
                         value={statistiques?.demandesRejetees}
                         subtitle={`Montant: ${statistiques?.montantRejete.toLocaleString()} FCFA`}
                         color="error.main"
+                        bg='#ff6384'
                     />
-              </div>
-           </div>
-           <div className="card">
-            <CardContent>
-                <Box sx={{ height: 400 }}>
-                    <Line options={chartOptions} data={chartData} />
-                </Box>
-            </CardContent>
-           </div>
-           <div className="card">
-            <CardContent>
-                <Box sx={{ height: 400 }}>
-                    <Pie data={pieData} />
-                </Box>
-            </CardContent>
-           </div>
+                </Grid>
+            </Grid>
+
+            <div className="flex gap-4  flex-row">
+                <div className="w-full flex-1">
+                <Line options={chartOptions} data={chartData} />
+                </div>
+                <div className="w-full flex-1">
+                <Pie data={pieData} />
+                </div>
+            </div>
         </ResponsableLayout>
     );
 };

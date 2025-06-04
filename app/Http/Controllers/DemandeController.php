@@ -64,15 +64,38 @@ class DemandeController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'first_name.required' => 'Le prénom est obligatoire',
+            'first_name.string' => 'Le prénom doit être une chaîne de caractères',
+            'first_name.max' => 'Le prénom ne doit pas dépasser 255 caractères',
+            // 'last_name.required' => 'Le nom est obligatoire',
+            // 'last_name.string' => 'Le nom doit être une chaîne de caractères',
+            'last_name.max' => 'Le nom ne doit pas dépasser 255 caractères',
+            'numero_compte.required' => 'Le numéro de compte est obligatoire',
+            'numero_compte.string' => 'Le numéro de compte doit être une chaîne de caractères',
+            'numero_compte.max' => 'Le numéro de compte ne doit pas dépasser 50 caractères',
+            'email.required' => 'L\'email est obligatoire',
+            'email.email' => 'L\'email doit être une adresse email valide',
+            'email.max' => 'L\'email ne doit pas dépasser 255 caractères',
+            'montant.required' => 'Le montant est obligatoire',
+            'montant.numeric' => 'Le montant doit être un nombre',
+            'phone.required' => 'Le numéro de téléphone est obligatoire',
+            'phone.string' => 'Le numéro de téléphone doit être une chaîne de caractères',
+            'phone.max' => 'Le numéro de téléphone ne doit pas dépasser 20 caractères',
+            'files.*.file' => 'Le fichier doit être un fichier valide',
+            'files.*.mimes' => 'Les fichiers doivent être de type : pdf, jpg, jpeg, png',
+            'files.*.max' => 'Les fichiers ne doivent pas dépasser 10 Mo'
+        ];
+
         $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            // 'last_name' => 'required|string|max:255',
             'numero_compte' => 'required|string|max:50',
             'email' => 'required|email|max:255',
             'montant' => 'required|numeric',
             'phone' => 'required|string|max:20',
             'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240' // max 10MB par fichier
-        ]);
+        ], $messages);
 
         // Création de la demande
         $demande = Demande::create([

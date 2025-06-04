@@ -113,7 +113,7 @@ const Demande = () => {
                 <form className="bg-white shadow-md rounded-lg px-4 sm:px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nom">
-                            Nom
+                            Nom (*)
                         </label>
                         <input
                             className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.first_name ? 'border-red-500' : ''}`}
@@ -147,7 +147,7 @@ const Demande = () => {
 
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                            Email
+                            Email (*)
                         </label>
                         <input
                             className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''}`}
@@ -163,15 +163,16 @@ const Demande = () => {
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="numero_compte">
-                            Numéro de compte
+                            Numéro de compte (*)
                         </label>
                         <input
-                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.email ? 'border-red-500' : ''}`}
+                            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.numero_compte ? 'border-red-500' : ''}`}
                             id="numero_compte"
-                            type="numero_compte"
+                            type="text"
                             placeholder="Votre numéro de compte"
                             onChange={(e)=>{setData(prev => ({...prev, numero_compte:e.target.value}))}}
                             value={data.numero_compte}
+                            required
                         />
                         {errors.numero_compte && (
                             <p className="text-red-500 text-xs italic mt-1">{errors.numero_compte}</p>
@@ -194,7 +195,7 @@ const Demande = () => {
 
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="montant">
-                            Montant
+                            Montant (*)
                         </label>
                         <input
                             className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.montant ? 'border-red-500' : ''}`}
@@ -212,7 +213,7 @@ const Demande = () => {
 
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="files">
-                            Documents (PDF, Images)
+                            Documents (PDF, Images) (*)
                         </label>
                         <input
                             className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.files ? 'border-red-500' : ''}`}

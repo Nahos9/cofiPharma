@@ -45,7 +45,7 @@ const NavigationHome = () => {
                 >
                     Faire votre demande
                 </Link>
-                <Link
+                {/* <Link
                     href="/contact"
                     className={`text-lg font-medium transition-colors duration-200 p-2 rounded-sm ${
                         url === '/contact'
@@ -54,7 +54,7 @@ const NavigationHome = () => {
                     }`}
                 >
                     Contact
-                </Link>
+                </Link> */}
             </nav>
         </div>
 

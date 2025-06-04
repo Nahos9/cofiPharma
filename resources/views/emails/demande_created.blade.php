@@ -68,7 +68,7 @@
 
             <p>Cher(e) {{ $demande->first_name }} {{ $demande->last_name }},</p>
 
-            <p>Vous avez récu une nouvelle demande de CofiPharma.</p>
+            <p>Vous avez effectué une demande de CofiPharma.</p>
 
             <div class="details">
                 <h3>Détails de la demande :</h3>
@@ -83,8 +83,8 @@
 
             <p>Si vous avez des questions, n'hésitez pas à nous contacter :</p>
             <ul>
-                <li>Par téléphone : +225 XX XX XX XX</li>
-                <li>Par email : contact@cofinacorp.com</li>
+                <li>Par téléphone : +241 65 99 01 46</li>
+                <li>Par email : service.client.ga@cofinacorp.com</li>
             </ul>
 
             <p>Cordialement,<br>

@@ -105,13 +105,13 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('respo
         $montantTotal = array_sum(array_column($statistiquesParStatut, 'montant_total'));
 
         $demandesEnAttente = $statistiquesParStatut['en attente']['total'] ?? 0;
-        $demandesValidees = $statistiquesParStatut['debloque']['total'] ?? 0;
+        $demandesValidees = $statistiquesParStatut['accepte']['total'] ?? 0;
         $demandesRejetees = $statistiquesParStatut['rejete']['total'] ?? 0;
         $demandesDebloquees = $statistiquesParStatut['debloque']['total'] ?? 0;
 
         // Montants par statut
         $montantEnAttente = $statistiquesParStatut['en attente']['montant_total'] ?? 0;
-        $montantValide = $statistiquesParStatut['debloque']['montant_total'] ?? 0;
+        $montantValide = $statistiquesParStatut['accepte']['montant_total'] ?? 0;
         $montantRejete = $statistiquesParStatut['rejete']['montant_total'] ?? 0;
         $montantDebloque = $statistiquesParStatut['debloque']['montant_total'] ?? 0;
 

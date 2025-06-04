@@ -95,7 +95,8 @@
                     <p><strong>Numéro de demande :</strong> #{{ $demande->id }}</p>
                     <p><strong>Montant approuvé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
                     <p><strong>Date de validation :</strong> {{ $demande->updated_at->format('d/m/Y H:i') }}</p>
-                    <p><strong>Validé par :</strong> {{ $demande->user_validateur }}</p>
+                    <p><strong>Numéro de compte :</strong> {{ $demande->numero_compte }}</p>
+                    <!-- <p><strong>Validé par :</strong> {{ $demande->user_validateur }}</p> -->
                 </div>
 
                 <p>Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités de votre financement.</p>
@@ -113,7 +114,7 @@
                     <p><strong>Numéro de demande :</strong> #{{ $demande->id }}</p>
                     <p><strong>Montant demandé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
                     <p><strong>Date de la décision :</strong> {{ $demande->updated_at->format('d/m/Y H:i') }}</p>
-                    <p><strong>Décision prise par :</strong> {{ $demande->user_validateur }}</p>
+                    <!-- <p><strong>Décision prise par :</strong> {{ $demande->user_validateur }}</p> -->
                 </div>
             @elseif($demande->status === 'debloque')
                 <div class="status-approved">
@@ -124,8 +125,8 @@
                 <div class="details">
 
                     <ul>
-                        <li>Par téléphone : +225 XX XX XX XX</li>
-                        <li>Par email : contact@cofinacorp.com</li>
+                        <li>Par téléphone : +241 65 99 01 46</li>
+                        <li>Par email : service.client.ga@cofinacorp.com</li>
                     </ul>
 
             <p>Cordialement,<br>
