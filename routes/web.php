@@ -6,6 +6,7 @@ use App\Models\Demande;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -51,23 +52,45 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 });
 Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function () {
     Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
-        $dateDebut = $request->input('date_debut', now()->subDays(7)->format('Y-m-d'));
+
+        $dateDebut = Demande::min('created_at');
+        $dateDebut = $dateDebut? $dateDebut : $request->input('date_debut');
         $dateFin = $request->input('date_fin', now()->format('Y-m-d'));
 
+        //  dd($dateDebut, $dateFin);
         // Statistiques des demandes par jour
-        $demandesParJour = Demande::whereBetween('created_at', [$dateDebut, $dateFin])
+        $demandesParJour = Demande::whereBetween('created_at', [
+                $dateDebut . ' 00:00:00',
+                $dateFin . ' 23:59:59'
+            ])
             ->where('is_deleted', 0)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total, SUM(montant) as montant_total')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
 
+        // Ajout de logs pour déboguer
+        //  dd($demandesParJour);
+
+        // Vérification de toutes les demandes dans la période
+        $toutesDemandes = Demande::whereBetween('created_at', [
+                $dateDebut . ' 00:00:00',
+                $dateFin . ' 23:59:59'
+            ])
+            ->where('is_deleted', 0)
+            ->get();
+
+        // dd($toutesDemandes);
         // Statistiques par statut
-        $statistiquesParStatut = Demande::whereBetween('created_at', [$dateDebut, $dateFin])
+        $statistiquesParStatut = Demande::whereBetween('created_at',[
+            $dateDebut . ' 00:00:00',
+            $dateFin . ' 23:59:59'
+        ])
             ->where('is_deleted', 0)
             ->selectRaw('status, COUNT(*) as total, SUM(montant) as montant_total')
             ->groupBy('status')
             ->get()
+
             ->mapWithKeys(function ($item) {
                 return [$item->status => [
                     'total' => $item->total,
@@ -75,9 +98,10 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('respo
                 ]];
             })
             ->toArray();
-
+        // dd($statistiquesParStatut);
         // Calcul des totaux
         $totalDemandes = array_sum(array_column($statistiquesParStatut, 'total'));
+        // dd($totalDemandes);
         $montantTotal = array_sum(array_column($statistiquesParStatut, 'montant_total'));
 
         $demandesEnAttente = $statistiquesParStatut['en attente']['total'] ?? 0;
