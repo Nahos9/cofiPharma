@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Auth\ChangePasswordController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -38,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demande.all');
+    Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('password.change');
+    Route::post('/change-password', [ChangePasswordController::class, 'update'])->name('password.change');
     // Autres routes admin
 });
 

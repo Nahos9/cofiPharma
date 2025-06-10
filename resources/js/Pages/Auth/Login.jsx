@@ -5,20 +5,32 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Eye,Mail,Lock,LoaderPinwheel    } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, LoaderPinwheel } from 'lucide-react';
+import { useState } from 'react';
 
 import "./Login.css"
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword, firstLogin }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     const submit = (e) => {
         e.preventDefault();
 
         post(route('login'), {
+            onSuccess: () => {
+                if (firstLogin) {
+                    window.location.href = route('password.change');
+                }
+            },
             onFinish: () => reset('password'),
         });
     };
@@ -77,12 +89,19 @@ export default function Login({ status, canResetPassword }) {
                                         {/* <i className="fas fa-lock text-gray-400"></i> */}
                                         <Lock className='text-gray-400' />
                                     </div>
-                                    <input type="password" id="password" className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-alldoc input-focus transition duration-300" placeholder="••••••••"
-                                    onChange={(e) => setData('password', e.target.value)}
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        className="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-alldoc input-focus transition duration-300"
+                                        placeholder="••••••••"
+                                        onChange={(e) => setData('password', e.target.value)}
                                     />
-                                    <button className="absolute right-3 top-3 text-gray-400 hover:text-gray-600" type="button" id="togglePassword">
-                                        {/* <i className="fas fa-eye"></i> */}
-                                        <Eye />
+                                    <button
+                                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                                        type="button"
+                                        onClick={togglePasswordVisibility}
+                                    >
+                                        {showPassword ? <EyeOff /> : <Eye />}
                                     </button>
                                 </div>
                             </div>
