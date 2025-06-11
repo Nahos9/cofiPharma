@@ -28,6 +28,10 @@ class DemandeController extends Controller
             return Inertia::render('responsable_ritel/demandes/EditDemande', [
                 'demande' => $demande->load(['user', 'pieceJointes'])
             ]);
+        }elseif(Auth::user()->role == "cassiere"){
+            return Inertia::render('caissiere/demandes/EditDemande', [
+                'demande' => $demande->load(['user', 'pieceJointes'])
+            ]);
         }else{
             return Inertia::render('operation/demandes/EditDemande', [
                 'demande' => $demande->load(['user', 'pieceJointes'])
@@ -155,18 +159,40 @@ class DemandeController extends Controller
         // dd($user->name);
         $status = $request->input('status');
         // dd($status);
-        if($status == "accepte" && $user->role == "responsable_ritel"){
+        if($status == "accepte" && $user->role == "cassiere"){
+            $demande["status"] = $status;
+            $demande["user_validateur_level"] = "responsable_ritel";
+            $demande->save();
+        //    try {
+        //     Mail::to($demande->email)->send(new ValidationMail($demande));
+        //    } catch (\Throwable $th) {
+
+        //    }
+            return redirect()->route('caissiere.demandes.all')->with('success','La demande a été validée avec success');
+
+        }elseif($status == "rejete" && $user->role == "cassiere"){
+            // dd($status);
+            $demande["status"] = $status;
+            $demande["user_validateur_level"] = $user->role;
+            $demande->save();
+            // try {
+            //     Mail::to($demande->email)->send(new ValidationMail($demande));
+            //    } catch (\Throwable $th) {
+
+            //    }
+            return redirect()->route('caissiere.demandes.all')->with('success','La demande a été rejetée avec success');
+        }elseif($status == "accepte" && $user->role == "responsable_ritel"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = "operation";
             $demande->save();
-           try {
-            Mail::to($demande->email)->send(new ValidationMail($demande));
-           } catch (\Throwable $th) {
+             try {
+                Mail::to($demande->email)->send(new ValidationMail($demande));
+            } catch (\Throwable $th) {
 
-           }
-            return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été validée avec success');
+            }
+            return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été acceptée avec success');
+
         }elseif($status == "rejete" && $user->role == "responsable_ritel"){
-            // dd($status);
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
             $demande->save();
@@ -175,7 +201,7 @@ class DemandeController extends Controller
                } catch (\Throwable $th) {
 
                }
-            return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été rejetée avec success');
+            return redirect()->route('operation.demandes.all')->with('success','La demande a été rejetée avec success');
         }elseif($status == "debloque" && $user->role == "operation"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
@@ -225,6 +251,12 @@ class DemandeController extends Controller
                     'demandes' => $demandes,
                     'filters' => $request->only(['search', 'status'])
                 ]);
+        }
+        if(Auth::user()->role == "cassiere"){
+            return Inertia::render('caissiere/demandes/AllDemandes', [
+                'demandes' => $demandes,
+                'filters' => $request->only(['search', 'status'])
+            ]);
         }
         return Inertia::render('demandes/AllDemandes', [
             'demandes' => $demandes,

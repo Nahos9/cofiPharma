@@ -38,6 +38,9 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('responsable_ritel.dashboard', absolute: false));
         }elseif($user->role === 'operation'){
             return redirect()->intended(route('operation.dashboard', absolute: false));
+        }elseif($user->role === 'cassiere'){
+            // dd("ok");
+            return redirect()->intended(route('caissiere.dashboard', absolute: false));
         }
 
         $request->session()->regenerate();

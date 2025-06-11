@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
+import OperationLayout from '@/Layouts/OperationLayout'
+import CaissiereLayout from '@/Layouts/CaissiereLayout'
 
 const EditDemande = ({demande}) => {
     const [showValidateModal, setShowValidateModal] = useState(false)
@@ -133,19 +135,19 @@ const EditDemande = ({demande}) => {
     };
 
   return (
-    <ResponsableLayout
+    <CaissiereLayout
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         Détails de la demande # {demande.first_name}  {demande.last_name}
                     </h2>
                     <div className="flex space-x-4">
-                  {demande.status == "accepte" && demande.user_validateur_level == "responsable_ritel" && (
+                  {demande.status == "en attente"  &&  demande.user_validateur_level == "cassiere" && (
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleValideClick(demande)}
                           className="text-green-600 hover:text-green-900"
-                          title='Valider'
+                          title='Debloquer'
                         >
                             <Check size={35} />
                         </button>
@@ -159,7 +161,7 @@ const EditDemande = ({demande}) => {
                       </div>
                   )}
                         <Link
-                            href={route('responsable_ritel.demandes.all')}
+                            href={route('caissiere.demandes.all')}
                             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Retour à la liste
@@ -318,7 +320,7 @@ const EditDemande = ({demande}) => {
                                         </h3>
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">
-                                                Êtes-vous sûr de vouloir accepter la demande de {demandeToValidate?.first_name} {demandeToValidate?.last_name} ?
+                                                Êtes-vous sûr de vouloir valider la demande de {demandeToValidate?.first_name} {demandeToValidate?.last_name} ?
                                                 Cette action est irréversible.
                                             </p>
                                         </div>
@@ -399,7 +401,7 @@ const EditDemande = ({demande}) => {
                     </div>
                 </div>
             )}
-        </ResponsableLayout>
+    </CaissiereLayout>
   )
 }
 

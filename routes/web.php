@@ -157,6 +157,16 @@ Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->
 
 });
 
+Route::middleware(['auth', 'verified', 'role:cassiere'])->prefix('caissiere')->name('caissiere.')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('caissiere/TableauCaissiere');
+    })->name('dashboard');
+
+    Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demandes.all');
+    Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+
+});
+
 Route::get('/statistiques', [DemandeController::class, 'statistics'])
     ->middleware(['auth'])
     ->name('statistiques');

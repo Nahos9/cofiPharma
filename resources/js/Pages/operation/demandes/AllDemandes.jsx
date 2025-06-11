@@ -311,15 +311,50 @@ const AllDemandes = ({ demandes }) => {
                                                     {demande.montant} FCFA
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
-                                                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                                        demande.status === 'en attente' && demande.user_validateur_level == "responsable_ritel" ? 'bg-yellow-100 text-yellow-800' :
-                                                        demande.status === 'accepte' && demande.user_validateur_level == "operation" ? 'bg-green-100 text-green-800' :
-                                                        demande.status === "debloque" && demande.user_validateur_level == "operation" ? 'bg-gray-400 text-white' :
-                                                        demande.status === "rejete" && demande.user_validateur_level == "operation" ? 'bg-red-100 text-red-800' : 'bg-red-100 text-red-800'
+                                                <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                                                        // Styles pour les différents statuts
+                                                        demande.status === 'en attente' ? 'bg-yellow-100 text-yellow-800' :
+                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-blue-100 text-blue-800' :
+                                                        demande.status === 'accepte' && demande.user_validateur_level === "operation" ? 'bg-green-100 text-green-800' :
+                                                        demande.status === "debloque" ? 'bg-purple-100 text-purple-800' :
+                                                        demande.status === "rejete" ? 'bg-red-100 text-red-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                     }`}>
-                                                        {demande.status === 'en attente' && demande.user_validateur_level == "responsable_ritel" ? 'En attente (Responsable Ritel)' :
-                                                         demande.status === 'accepte' && demande.user_validateur_level == "operation" ? 'En attente (Operation)' :
-                                                         demande.status === "debloque" && demande.user_validateur_level == "operation" ? 'Debloqué par operation' : demande.status === "rejete" && demande.user_validateur_level == "operation" ? 'Rejeté par operation' : 'Rejeté par responsable Ritel' }
+                                                        {(() => {
+                                                            // Logique pour le texte des statuts
+                                                            if (demande.status === 'en attente') {
+                                                                if(demande.user_validateur_level === "responsable_ritel"){
+                                                                    return 'En attente (responsable Ritel)';
+                                                                }
+                                                                if(demande.user_validateur_level === "cassiere"){
+                                                                    return 'En attente (Caissiere)';
+                                                                }
+                                                            }
+                                                            if (demande.status === 'accepte') {
+                                                                if (demande.user_validateur_level === "responsable_ritel") {
+                                                                    return 'En attente (Operation)';
+                                                                }
+                                                                if (demande.user_validateur_level === "operation") {
+                                                                    return 'En attente (Operation)';
+                                                                }
+                                                            }
+                                                            if (demande.status === "debloque") {
+                                                                return 'Débloqué';
+                                                            }
+                                                            if (demande.status === "rejete") {
+                                                                if (demande.user_validateur_level === "operation") {
+                                                                    return 'Rejeté par Opération';
+                                                                }
+                                                                if (demande.user_validateur_level === "responsable_ritel") {
+                                                                    return 'Rejeté par Ritel';
+                                                                }
+                                                                if (demande.user_validateur_level === "cassiere") {
+                                                                    return 'Rejeté par caissiere';
+                                                                }
+                                                                return 'Rejeté';
+                                                            }
+                                                            return 'Statut inconnu';
+                                                        })()}
                                                     </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
