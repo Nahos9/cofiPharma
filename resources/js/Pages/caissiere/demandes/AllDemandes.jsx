@@ -243,6 +243,7 @@ const AllDemandes = ({ demandes }) => {
                                         <option value="en attente">En attente</option>
                                         <option value="accepte">Approuvé</option>
                                         <option value="rejete">Rejeté</option>
+                                        <option value="debloque">Débloqué</option>
                                     </select>
                                 </div>
                             </div>
