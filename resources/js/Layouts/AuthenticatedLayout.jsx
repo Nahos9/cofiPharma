@@ -7,7 +7,6 @@ import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
-
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
@@ -24,12 +23,30 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                               {user.role == "cassiere" && (
                                 <NavLink
-                                    href={route('admin.dashboard')}
-                                    active={route().current('admin.dashboard')}
+                                    href={route('caissiere.dashboard')}
+                                    active={route().current('caissiere.dashboard')}
                                 >
                                     Dashboard
                                 </NavLink>
+                               )}
+                                {user.role == "responsable_ritel" && (
+                                <NavLink
+                                    href={route('responsable_ritel.dashboard')}
+                                    active={route().current('responsable_ritel.dashboard')}
+                                >
+                                    Dashboard
+                                </NavLink>
+                               )}
+                                {user.role == "operation" && (
+                                <NavLink
+                                    href={route('operation.dashboard')}
+                                    active={route().current('operation.dashboard')}
+                                >
+                                    Dashboard
+                                </NavLink>
+                               )}
                             </div>
                         </div>
 
@@ -128,12 +145,32 @@ export default function AuthenticatedLayout({ header, children }) {
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
+                       {user.role == "cassiere" && (
                         <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
+                            href={route('caissiere.dashboard')}
+                            active={route().current('caissiere.dashboard')}
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                       )}
+                        {user.role == "responsable_ritel" && (
+                            <ResponsiveNavLink
+                                href={route('responsable_ritel.dashboard')}
+                                active={route().current('responsable_ritel.dashboard')}
+                            >
+                                Dashboard
+                            </ResponsiveNavLink>
+                        )}
+                         {user.role == "ope" && (
+                            <ResponsiveNavLink
+                                href={route('operation.dashboard')}
+                                active={route().current('operation.dashboard')}
+                            >
+                                Dashboard
+                            </ResponsiveNavLink>
+                        )}
+
+
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
