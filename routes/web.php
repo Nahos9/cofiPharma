@@ -144,7 +144,10 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('respo
     })->name('dashboard');
 
     Route::get('/demandes/all', [DemandeController::class, 'allDemandesResponsable'])->name('demandes.all');
-
+    Route::get('/demandes/all-debloques', [DemandeController::class, 'allDemandesDebloques'])->name('demandes.all-debloques');
+    Route::get('/demandes/all-rejetees', [DemandeController::class, 'allDemandesRejetees'])->name('demandes.all-rejetees');
+    Route::get('/demandes/all-acceptees', [DemandeController::class, 'allDemandesAcceptees'])->name('demandes.all-acceptees');
+    Route::get('/demandes/all-en-attente', [DemandeController::class, 'allDemandesEnAttente'])->name('demandes.all-en-attente');
 });
 
 Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->name('operation.')->group(function () {

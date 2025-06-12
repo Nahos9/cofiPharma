@@ -408,4 +408,112 @@ class DemandeController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+    public function allDemandesDebloques(Request $request)
+    {
+        $query = Demande::with('user')
+        ->when($request->search, function($query) use ($request) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%");
+                })
+                ->orWhere('montant', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%");
+            });
+        })
+        ->when($request->status, function($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->where('is_deleted',0)
+        ->where('status', 'debloque')
+        ->latest();
+
+        $demandes = $query->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('responsable_ritel/demandes/AllDemandesDebloques', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
+        ]);
+    }
+    public function allDemandesRejetees(Request $request)
+    {
+        $query = Demande::with('user')
+        ->when($request->search, function($query) use ($request) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%");
+                })
+                ->orWhere('montant', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%");
+            });
+        })
+        ->when($request->status, function($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->where('is_deleted',0)
+        ->where('status', 'rejete')
+        ->latest();
+
+        $demandes = $query->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('responsable_ritel/demandes/AllDemandesRejetees', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
+        ]);
+    }
+    public function allDemandesAcceptees(Request $request)
+    {
+        $query = Demande::with('user')
+        ->when($request->search, function($query) use ($request) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%");
+                })
+                ->orWhere('montant', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%");
+            });
+        })
+        ->when($request->status, function($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->where('is_deleted',0)
+        ->where('status', 'accepte')
+        ->latest();
+
+        $demandes = $query->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('responsable_ritel/demandes/AllDemandesAcceptees', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
+        ]);
+    }
+    public function allDemandesEnAttente(Request $request)
+    {
+        $query = Demande::with('user')
+        ->when($request->search, function($query) use ($request) {
+            $query->where(function($q) use ($request) {
+                $q->whereHas('user', function($q) use ($request) {
+                    $q->where('first_name', 'like', "%{$request->search}%");
+                })
+                ->orWhere('montant', 'like', "%{$request->search}%")
+                ->orWhere('last_name', 'like', "%{$request->search}%");
+            });
+        })
+        ->when($request->status, function($query) use ($request) {
+            $query->where('status', $request->status);
+        })
+        ->where('is_deleted',0)
+        ->where('status', 'en attente')
+        ->latest();
+        $demandes = $query->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('responsable_ritel/demandes/AllDemandesEnAttente', [
+            'demandes' => $demandes,
+            'filters' => $request->only(['search', 'status'])
+        ]);
+    }
+
 }

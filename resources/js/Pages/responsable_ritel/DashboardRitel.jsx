@@ -1,5 +1,5 @@
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
-import { Head, router } from '@inertiajs/react'
+import { Head, Link, router } from '@inertiajs/react'
 import React, { useState, useMemo } from 'react'
 import {
     Card,
@@ -221,23 +221,26 @@ const DashboardRitel = ({ statistiques }) => {
 
             <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Link href={route('responsable_ritel.demandes.all')}>
                     <StatCard
                         title="Total des demandes"
                         value={statistiques?.totalDemandes}
                         subtitle={`Montant total: ${statistiques?.montantTotal.toLocaleString()} FCFA`}
                         bg=""
-                    />
+                    /></Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Link href={route('responsable_ritel.demandes.all-en-attente')}>
                     <StatCard
                         title="Demandes en attente"
                         value={statistiques?.demandesEnAttente}
                         subtitle={`Montant: ${statistiques?.montantEnAttente.toLocaleString()} FCFA`}
                         color="warning.main"
                         bg="#FFCD56"
-                    />
+                    /></Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Link href={route('responsable_ritel.demandes.all-acceptees')}>
                     <StatCard
                         title="Demandes validées"
                         value={statistiques?.demandesValidees}
@@ -245,17 +248,20 @@ const DashboardRitel = ({ statistiques }) => {
                         color="success.main"
                         bg='#4bc0c0'
                     />
+                    </Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Link href={route('responsable_ritel.demandes.all-debloques')}>
                     <StatCard
                         title="Demandes débloquées"
                         value={statistiques?.demandesDebloquees}
                         subtitle={`Montant: ${statistiques?.montantDebloque.toLocaleString()} FCFA`}
                         color="info.main"
                         bg='#36A2EB'
-                    />
+                    /></Link>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <Link href={route('responsable_ritel.demandes.all-rejetees')}>
                     <StatCard
                         title="Demandes rejetées"
                         value={statistiques?.demandesRejetees}
@@ -263,6 +269,7 @@ const DashboardRitel = ({ statistiques }) => {
                         color="error.main"
                         bg='#ff6384'
                     />
+                    </Link>
                 </Grid>
             </Grid>
 
