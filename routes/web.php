@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -148,6 +149,7 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('respo
     Route::get('/demandes/all-rejetees', [DemandeController::class, 'allDemandesRejetees'])->name('demandes.all-rejetees');
     Route::get('/demandes/all-acceptees', [DemandeController::class, 'allDemandesAcceptees'])->name('demandes.all-acceptees');
     Route::get('/demandes/all-en-attente', [DemandeController::class, 'allDemandesEnAttente'])->name('demandes.all-en-attente');
+    Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
 });
 
 Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->name('operation.')->group(function () {
@@ -160,7 +162,7 @@ Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->
 
 });
 
-Route::middleware(['auth', 'verified', 'role:cassiere'])->prefix('caissiere')->name('caissiere.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:charge client'])->prefix('caissiere')->name('caissiere.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('caissiere/TableauCaissiere');
     })->name('dashboard');
@@ -170,6 +172,103 @@ Route::middleware(['auth', 'verified', 'role:cassiere'])->prefix('caissiere')->n
 
 });
 
+Route::middleware(['auth', 'verified', 'role:visiteur'])->prefix('visiteur')->name('visiteur.')->group(function () {
+    Route::get('/dashboard', function (Request $request) {
+        $dateDebut = Demande::min('created_at');
+        $dateDebut = $dateDebut? $dateDebut : $request->input('date_debut');
+        $dateFin = $request->input('date_fin', now()->format('Y-m-d'));
+
+        //  dd($dateDebut, $dateFin);
+        // Statistiques des demandes par jour
+        $demandesParJour = Demande::whereBetween('created_at', [
+                $dateDebut . ' 00:00:00',
+                $dateFin . ' 23:59:59'
+            ])
+            ->where('is_deleted', 0)
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Ajout de logs pour déboguer
+        //  dd($demandesParJour);
+
+        // Vérification de toutes les demandes dans la période
+        $toutesDemandes = Demande::whereBetween('created_at', [
+                $dateDebut . ' 00:00:00',
+                $dateFin . ' 23:59:59'
+            ])
+            ->where('is_deleted', 0)
+            ->get();
+
+        // dd($toutesDemandes);
+        // Statistiques par statut
+        $statistiquesParStatut = Demande::whereBetween('created_at',[
+            $dateDebut . ' 00:00:00',
+            $dateFin . ' 23:59:59'
+        ])
+            ->where('is_deleted', 0)
+            ->selectRaw('status, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('status')
+            ->get()
+
+            ->mapWithKeys(function ($item) {
+                return [$item->status => [
+                    'total' => $item->total,
+                    'montant_total' => $item->montant_total
+                ]];
+            })
+            ->toArray();
+        // dd($statistiquesParStatut);
+        // Calcul des totaux
+        $totalDemandes = array_sum(array_column($statistiquesParStatut, 'total'));
+        // dd($totalDemandes);
+        $montantTotal = array_sum(array_column($statistiquesParStatut, 'montant_total'));
+
+        $demandesEnAttente = $statistiquesParStatut['en attente']['total'] ?? 0;
+        $demandesValidees = $statistiquesParStatut['accepte']['total'] ?? 0;
+        $demandesRejetees = $statistiquesParStatut['rejete']['total'] ?? 0;
+        $demandesDebloquees = $statistiquesParStatut['debloque']['total'] ?? 0;
+
+        // Montants par statut
+        $montantEnAttente = $statistiquesParStatut['en attente']['montant_total'] ?? 0;
+        $montantValide = $statistiquesParStatut['accepte']['montant_total'] ?? 0;
+        $montantRejete = $statistiquesParStatut['rejete']['montant_total'] ?? 0;
+        $montantDebloque = $statistiquesParStatut['debloque']['montant_total'] ?? 0;
+
+        // Moyenne des montants
+        $moyenneMontant = $totalDemandes > 0 ? $montantTotal / $totalDemandes : 0;
+        return Inertia::render('visiteur/DashboardVisiteur',
+        [
+            'statistiques' => [
+                'demandesParJour' => $demandesParJour,
+                'totalDemandes' => $totalDemandes,
+                'montantTotal' => $montantTotal,
+                'moyenneMontant' => $moyenneMontant,
+                'demandesEnAttente' => $demandesEnAttente,
+                'demandesValidees' => $demandesValidees,
+                'demandesRejetees' => $demandesRejetees,
+                'demandesDebloquees' => $demandesDebloquees,
+                'montantEnAttente' => $montantEnAttente,
+                'montantValide' => $montantValide,
+                'montantRejete' => $montantRejete,
+                'montantDebloque' => $montantDebloque,
+                'filtres' => [
+                    'date_debut' => $dateDebut,
+                    'date_fin' => $dateFin
+                ]
+            ]
+        ]);
+    })->name('dashboard');
+
+    Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demandes.all');
+    Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+    Route::get('/demandes/all-debloques', [DemandeController::class, 'allDemandesDebloques'])->name('demandes.all-debloques');
+    Route::get('/demandes/all-rejetees', [DemandeController::class, 'allDemandesRejetees'])->name('demandes.all-rejetees');
+    Route::get('/demandes/all-acceptees', [DemandeController::class, 'allDemandesAcceptees'])->name('demandes.all-acceptees');
+    Route::get('/demandes/all-en-attente', [DemandeController::class, 'allDemandesEnAttente'])->name('demandes.all-en-attente');
+
+});
 Route::get('/statistiques', [DemandeController::class, 'statistics'])
     ->middleware(['auth'])
     ->name('statistiques');

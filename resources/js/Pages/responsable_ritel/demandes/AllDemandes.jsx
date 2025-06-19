@@ -314,7 +314,7 @@ const AllDemandes = ({ demandes }) => {
                                                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                                                         // Styles pour les différents statuts
                                                         demande.status === 'en attente' ? 'bg-yellow-100 text-yellow-800' :
-                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-blue-100 text-blue-800' :
+                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-green-100 text-green-800' :
                                                         demande.status === 'accepte' && demande.user_validateur_level === "operation" ? 'bg-green-100 text-green-800' :
                                                         demande.status === "debloque" ? 'bg-purple-100 text-purple-800' :
                                                         demande.status === "rejete" ? 'bg-red-100 text-red-800' :
@@ -322,17 +322,17 @@ const AllDemandes = ({ demandes }) => {
                                                     }`}>
                                                         {(() => {
                                                             // Logique pour le texte des statuts
-                                                            if (demande.status === 'en attente') {
+                                                            if (demande.status === 'accepte') {
                                                                 if(demande.user_validateur_level === "responsable_ritel"){
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
-                                                                if(demande.user_validateur_level === "cassiere"){
-                                                                    return 'En attente (Caissiere)';
+                                                                if(demande.user_validateur_level === "charge client"){
+                                                                    return 'En attente (Charge client)';
                                                                 }
                                                             }
                                                             if (demande.status === 'accepte') {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
-                                                                    return 'En attente (Operation)';
+                                                                    return 'En attente (responsable ritel)';
                                                                 }
                                                                 if (demande.user_validateur_level === "operation") {
                                                                     return 'En attente (Operation)';
@@ -348,8 +348,8 @@ const AllDemandes = ({ demandes }) => {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
                                                                     return 'Rejeté par Ritel';
                                                                 }
-                                                                if (demande.user_validateur_level === "cassiere") {
-                                                                    return 'Rejeté (caissiere)';
+                                                                if (demande.user_validateur_level === "charge client") {
+                                                                    return 'Rejeté (charge client)';
                                                                 }
                                                                 return 'Rejeté';
                                                             }

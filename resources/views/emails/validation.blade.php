@@ -95,7 +95,8 @@
                     <p><strong>Numéro de demande :</strong> #{{ $demande->id }}</p>
                     <p><strong>Montant approuvé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
                     <p><strong>Date de validation :</strong> {{ $demande->updated_at->format('d/m/Y H:i') }}</p>
-                    <p><strong>Numéro de compte :</strong> {{ $demande->numero_compte }}</p>
+                    <!-- <p><strong>Numéro de commande :</strong> #{{ $demande->numero_commande }}</p>
+                    <p><strong>Numéro de compte :</strong> {{ $demande->numero_compte }}</p> -->
                     <!-- <p><strong>Validé par :</strong> {{ $demande->user_validateur }}</p> -->
                 </div>
 
@@ -121,17 +122,23 @@
                     <h3>🎉 Félicitations ! Votre demande a été approuvée</h3>
                     <p>Nous avons le plaisir de vous informer que votre demande de financement a été validée et les fonds sont déjà à votre disposition.</p>
                 </div>
-
                 <div class="details">
-
+                    <h3>Détails de la décision :</h3>
+                    <p><strong>Numéro de demande :</strong> #{{ $demande->id }}</p>
+                    <p><strong>Montant demandé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
+                    <p><strong>Date de la décision :</strong> {{ $demande->updated_at->format('d/m/Y H:i') }}</p>
+                    <!-- <p><strong>Décision prise par :</strong> {{ $demande->user_validateur }}</p> -->
+                </div>
+                <div class="details">
+                    <h3>Contactez-nous :</h3>
                     <ul>
                         <li>Par téléphone : +241 65 99 01 46</li>
                         <li>Par email : service.client.ga@cofinacorp.com</li>
                     </ul>
 
-            <p>Cordialement,<br>
-            L'équipe CofiPharma</p>
-        </div>
+                <p>Cordialement,<br>
+                L'équipe CofiPharma</p>
+                 </div>
           @endif
         <div class="footer">
             <p>© {{ date('Y') }} CofiPharma. Tous droits réservés.</p>

@@ -25,8 +25,8 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                {user.role == "cassiere" && (
                                 <NavLink
-                                    href={route('caissiere.dashboard')}
-                                    active={route().current('caissiere.dashboard')}
+                                    href={route('caissiere.demandes.all')}
+                                    active={route().current('caissiere.demandes.all')}
                                 >
                                     Dashboard
                                 </NavLink>
@@ -41,8 +41,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                )}
                                 {user.role == "operation" && (
                                 <NavLink
-                                    href={route('operation.dashboard')}
-                                    active={route().current('operation.dashboard')}
+                                    href={route('operation.demandes.all')}
+                                    active={route().current('operation.demandes.all')}
                                 >
                                     Dashboard
                                 </NavLink>

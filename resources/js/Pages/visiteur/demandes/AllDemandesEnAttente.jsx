@@ -4,8 +4,9 @@ import { useState, useMemo } from 'react'
 import { Trash, Eye } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import ResponsableLayout from '@/Layouts/ResponsableLayout';
+import VisiteurLayout from '@/Layouts/VisiteurLayout';
 
-const AllDemandesDebloques = ({ demandes }) => {
+const AllDemandesEnAttente = ({ demandes }) => {
     const [selectedItems, setSelectedItems] = useState([])
     const [selectAll, setSelectAll] = useState(false)
     const [search, setSearch] = useState('')
@@ -130,11 +131,11 @@ const AllDemandesDebloques = ({ demandes }) => {
 
 
   return (
-    <ResponsableLayout
+    <VisiteurLayout
         header={
                 <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Liste des demandes débloquées
+                        Liste des demandes en attente
             </h2>
                     {selectedItems.length > 0 && (
                         <button
@@ -368,13 +369,13 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                     >
                                                         <Eye />
                                                     </a>
-                                                   {demande?.status == "en attente" &&  ( <button
+                                                   {/* {demande?.status == "en attente" &&  ( <button
                                                         onClick={() => handleDeleteClick(demande)}
                                                         className="text-red-600 hover:text-red-900"
                                                         title='Supprimer'
                                                     >
                                                         <Trash />
-                                                    </button>)}
+                                                    </button>)} */}
                                                 </td>
                                             </tr>
                                         ))}
@@ -434,8 +435,8 @@ const AllDemandesDebloques = ({ demandes }) => {
                 </div>
             </div>
         </div>
-</ResponsableLayout>
+</VisiteurLayout>
   )
 }
 
-export default AllDemandesDebloques
+export default AllDemandesEnAttente

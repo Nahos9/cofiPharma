@@ -28,7 +28,11 @@ class DemandeController extends Controller
             return Inertia::render('responsable_ritel/demandes/EditDemande', [
                 'demande' => $demande->load(['user', 'pieceJointes'])
             ]);
-        }elseif(Auth::user()->role == "cassiere"){
+        }elseif(Auth::user()->role == "visiteur"){
+            return Inertia::render('visiteur/demandes/EditDemande', [
+                'demande' => $demande->load(['user', 'pieceJointes'])
+            ]);
+        }elseif(Auth::user()->role == "charge client"){
             return Inertia::render('caissiere/demandes/EditDemande', [
                 'demande' => $demande->load(['user', 'pieceJointes'])
             ]);
@@ -98,7 +102,7 @@ class DemandeController extends Controller
             'email' => 'required|email|max:255',
             'montant' => 'required|numeric',
             'phone' => 'required|string|max:20',
-            'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240' // max 10MB par fichier
+            'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:20240' // max 10MB par fichier
         ], $messages);
 
         // Création de la demande
@@ -108,8 +112,10 @@ class DemandeController extends Controller
             'email' => $request->email,
             'numero_compte' => $request->numero_compte,
             'montant' => $request->montant,
+            'numero_carte'=> $request->carte ?? null,
+            'mode_paiement'=>$request->mode_paiement,
             'phone' => $request->phone,
-            'user_validateur_level' => "responsable_ritel",
+            'user_validateur_level' => "charge client",
         ]);
 
         // Traitement des fichiers
@@ -159,7 +165,7 @@ class DemandeController extends Controller
         // dd($user->name);
         $status = $request->input('status');
         // dd($status);
-        if($status == "accepte" && $user->role == "cassiere"){
+        if($status == "accepte" && $user->role == "charge client"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = "responsable_ritel";
             $demande->save();
@@ -170,7 +176,7 @@ class DemandeController extends Controller
         //    }
             return redirect()->route('caissiere.demandes.all')->with('success','La demande a été validée avec success');
 
-        }elseif($status == "rejete" && $user->role == "cassiere"){
+        }elseif($status == "rejete" && $user->role == "charge client"){
             // dd($status);
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
@@ -185,22 +191,22 @@ class DemandeController extends Controller
             $demande["status"] = $status;
             $demande["user_validateur_level"] = "operation";
             $demande->save();
-             try {
-                Mail::to($demande->email)->send(new ValidationMail($demande));
-            } catch (\Throwable $th) {
+            //  try {
+            //     Mail::to($demande->email)->send(new ValidationMail($demande));
+            // } catch (\Throwable $th) {
 
-            }
+            // }
             return redirect()->route('responsable_ritel.demandes.all')->with('success','La demande a été acceptée avec success');
 
         }elseif($status == "rejete" && $user->role == "responsable_ritel"){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = $user->role;
             $demande->save();
-            try {
-                Mail::to($demande->email)->send(new ValidationMail($demande));
-               } catch (\Throwable $th) {
+            // try {
+            //     Mail::to($demande->email)->send(new ValidationMail($demande));
+            //    } catch (\Throwable $th) {
 
-               }
+            //    }
             return redirect()->route('operation.demandes.all')->with('success','La demande a été rejetée avec success');
         }elseif($status == "debloque" && $user->role == "operation"){
             $demande["status"] = $status;
@@ -252,8 +258,14 @@ class DemandeController extends Controller
                     'filters' => $request->only(['search', 'status'])
                 ]);
         }
-        if(Auth::user()->role == "cassiere"){
+        if(Auth::user()->role == "charge client"){
             return Inertia::render('caissiere/demandes/AllDemandes', [
+                'demandes' => $demandes,
+                'filters' => $request->only(['search', 'status'])
+            ]);
+        }
+        if(Auth::user()->role == "visiteur"){
+            return Inertia::render('visiteur/demandes/AllDemandes', [
                 'demandes' => $demandes,
                 'filters' => $request->only(['search', 'status'])
             ]);
@@ -381,12 +393,12 @@ class DemandeController extends Controller
             fputcsv($file, [
                 'Date',
                 'Nom',
-                'Prénom',
+                'Prenom',
                 'Email',
-                'Numéro de compte',
+                'Numero de compte',
                 'Montant',
                 'Statut',
-                'Téléphone'
+                'Telephone'
             ]);
 
             // Données
@@ -408,6 +420,7 @@ class DemandeController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
     public function allDemandesDebloques(Request $request)
     {
         $query = Demande::with('user')
@@ -430,10 +443,16 @@ class DemandeController extends Controller
         $demandes = $query->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('responsable_ritel/demandes/AllDemandesDebloques', [
+       if(Auth::user()->role == "visiteur"){
+        return Inertia::render('visiteur/demandes/AllDemandesDebloques', [
             'demandes' => $demandes,
             'filters' => $request->only(['search', 'status'])
         ]);
+       }
+       return Inertia::render('responsable_ritel/demandes/AllDemandesDebloques', [
+        'demandes' => $demandes,
+        'filters' => $request->only(['search', 'status'])
+       ]);
     }
     public function allDemandesRejetees(Request $request)
     {
@@ -457,10 +476,16 @@ class DemandeController extends Controller
         $demandes = $query->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('responsable_ritel/demandes/AllDemandesRejetees', [
+       if(Auth::user()->role == "visiteur"){
+        return Inertia::render('visiteur/demandes/AllDemandesRejetees', [
             'demandes' => $demandes,
             'filters' => $request->only(['search', 'status'])
         ]);
+       }
+       return Inertia::render('responsable_ritel/demandes/AllDemandesRejetees', [
+        'demandes' => $demandes,
+        'filters' => $request->only(['search', 'status'])
+       ]);
     }
     public function allDemandesAcceptees(Request $request)
     {
@@ -484,10 +509,16 @@ class DemandeController extends Controller
         $demandes = $query->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('responsable_ritel/demandes/AllDemandesAcceptees', [
+       if(Auth::user()->role == "visiteur"){
+        return Inertia::render('visiteur/demandes/AllDemandesAcceptees', [
             'demandes' => $demandes,
             'filters' => $request->only(['search', 'status'])
         ]);
+       }
+       return Inertia::render('responsable_ritel/demandes/AllDemandesAcceptees', [
+        'demandes' => $demandes,
+        'filters' => $request->only(['search', 'status'])
+       ]);
     }
     public function allDemandesEnAttente(Request $request)
     {
@@ -510,10 +541,16 @@ class DemandeController extends Controller
         $demandes = $query->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('responsable_ritel/demandes/AllDemandesEnAttente', [
+       if(Auth::user()->role == "visiteur"){
+        return Inertia::render('visiteur/demandes/AllDemandesEnAttente', [
             'demandes' => $demandes,
             'filters' => $request->only(['search', 'status'])
         ]);
+       }
+        return Inertia::render('responsable_ritel/demandes/AllDemandesEnAttente', [
+        'demandes' => $demandes,
+        'filters' => $request->only(['search', 'status'])
+       ]);
     }
 
 }

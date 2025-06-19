@@ -8,10 +8,9 @@ export default function FooterHome() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Section À propos */}
                     <div>
-                        <h3 className="text-xl font-bold mb-4">À propos de CofiPharma</h3>
+                        <h3 className="text-xl font-bold mb-4">À propos de CofiExpress</h3>
                         <p className="text-gray-300">
-                            CofiPharma est votre partenaire de confiance pour le financement de vos médicaments.
-                            Nous simplifions le processus d'obtention de financement pour vos besoins médicaux.
+                        CofiExpress est une application pour financer vos médicaments ou demander une avance sur salaire, rapidement et en toute simplicité.
                         </p>
                     </div>
 
@@ -26,7 +25,7 @@ export default function FooterHome() {
                             </li>
                             <li>
                                 <Link href="/demandes" className="text-gray-300 hover:text-white transition-colors">
-                                    Faire une demande
+                                    Demande cofi'Pharma
                                 </Link>
                             </li>
                             {/* <li>

@@ -85,6 +85,7 @@
             <div class="details">
                 <h3>Informations du demandeur :</h3>
                 <p><strong>Nom complet :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
+                <p> <strong>Numéro de compte : </strong> {{ $demande->numero_compte }}</p>
                 <p><strong>Email :</strong> {{ $demande->email }}</p>
                 <p><strong>Téléphone :</strong> {{ $demande->phone }}</p>
                 <p><strong>Montant demandé :</strong> <span class="priority">{{ number_format($demande->montant, 2, ',', ' ') }} FCFA</span></p>

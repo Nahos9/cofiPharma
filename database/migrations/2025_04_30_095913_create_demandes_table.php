@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('numero_compte');
             $table->string('montant');
+            $table->string('mode_paiement');
+            $table->string('numero_carte')->nullable();
             $table->string('status')->default('en attente');
             $table->string('user_validateur_level')->nullable();
             $table->boolean('is_deleted')->default(false);

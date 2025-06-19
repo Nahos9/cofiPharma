@@ -37,17 +37,18 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
             />
             <div className="bg-blue-500 p-4 sm:p-6 text-center text-white">
                 <p className='text-3xl sm:text-5xl font-bold py-3'>
-                    Vos médicaments <br className="hidden sm:block" /> financés par votre banque
+                    CofiExpress <br className="hidden sm:block" />
                 </p>
                 <p className='text-base sm:text-lg py-2 max-w-2xl mx-auto'>
-                    CofiPharma vous permet d'obtenir un financement dans de brefs délais pour vos médicaments sur présentation d'une ordonnance médicale
+                Parce que vos besoins ne peuvent pas attendre.
+                Accédez à un financement immédiat pour vos médicaments ou demandez une avance sur salaire en toute simplicité.
                 </p>
-                <Button variant="outline" className="mt-4 bg-white text-blue-500 hover:bg-blue-100 transition-colors duration-200">
+                {/* <Button variant="outline" className="mt-4 bg-white text-blue-500 hover:bg-blue-100 transition-colors duration-200">
                     <Link className='flex items-center justify-center gap-2' href="/demandes">
                         <ArrowDownToDot className="w-5 h-5" />
                         <span>Demander un financement</span>
                     </Link>
-                </Button>
+                </Button> */}
             </div>
 
             {/* Section Avantages */}

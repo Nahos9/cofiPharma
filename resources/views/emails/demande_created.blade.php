@@ -66,7 +66,7 @@
         <div class="content">
             <h2>Nouvelle demande</h2>
 
-            <p>Cher(e) {{ $demande->first_name }} {{ $demande->last_name }},</p>
+            <p>Cher(e) client,</p>
 
             <p>Vous avez effectué une demande de CofiPharma.</p>
 
@@ -79,7 +79,7 @@
                 <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
             </div>
 
-            <p>Notre équipe va étudier votre demande dans les plus brefs délais. Nous vous contacterons très prochainement pour vous donner une suite favorable.</p>
+            <p>Notre équipe va étudier votre demande dans les plus brefs délais. Nous vous contacterons très prochainement pour vous donner une suite.</p>
 
             <p>Si vous avez des questions, n'hésitez pas à nous contacter :</p>
             <ul>

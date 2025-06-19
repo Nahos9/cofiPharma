@@ -211,18 +211,36 @@ const EditDemande = ({demande}) => {
 
                             <div className="mt-8">
                                 <h3 className="text-lg font-medium leading-6 text-gray-900">Détails de la demande</h3>
-                                <div className="mt-5">
+                                <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
                                     <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
                                         <dt className="text-sm font-medium text-gray-500">Montant demande</dt>
                                         <dd className="mt-1 text-lg text-gray-900">{demande.montant} FCFA</dd>
                                     </div>
-                                </div>
-                                {/* <div className="mt-5">
-                                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500">Description</dt>
-                                        <dd className="mt-1 text-lg text-gray-900 whitespace-pre-wrap">{demande.description}</dd>
+                                    <div className="overflow-hidden lt-1 rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                        <dt className="text-sm font-medium text-gray-500">Numéro de compte</dt>
+                                        <dd className="mt-1 text-lg text-gray-900 whitespace-pre-wrap">{demande.numero_compte}</dd>
                                     </div>
-                                </div> */}
+                                </div>
+                                <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                        <dt className="text-xl font-medium text-gray-500">Mode de paiement</dt>
+                                        <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.mode_paiement}</dd>
+                                    </div>
+
+                                    {demande.mode_paiement == "mobile" && (
+                                        <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                            <dt className="text-xl font-medium text-gray-500">Numéro de téléphone</dt>
+                                            <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.phone}</dd>
+                                        </div>
+                                    )}
+                                    {demande.mode_paiement == "carte" && (
+                                        <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                            <dt className="text-xl font-medium text-gray-500">Numéro carte</dt>
+                                            <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.numero_carte}</dd>
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
 
                             <div className="mt-8">

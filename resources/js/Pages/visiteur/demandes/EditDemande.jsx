@@ -5,8 +5,7 @@ import { toast } from 'react-hot-toast'
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
-import OperationLayout from '@/Layouts/OperationLayout'
-import CaissiereLayout from '@/Layouts/CaissiereLayout'
+import VisiteurLayout from '@/Layouts/VisiteurLayout'
 
 const EditDemande = ({demande}) => {
     const [showValidateModal, setShowValidateModal] = useState(false)
@@ -135,19 +134,19 @@ const EditDemande = ({demande}) => {
     };
 
   return (
-    <CaissiereLayout
+    <VisiteurLayout
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
                         Détails de la demande # {demande.first_name}  {demande.last_name}
                     </h2>
                     <div className="flex space-x-4">
-                  {demande.status == "en attente"  &&  demande.user_validateur_level == "cassiere" && (
+                  {/* {demande.status == "accepte" && demande.user_validateur_level == "responsable_ritel" && (
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleValideClick(demande)}
                           className="text-green-600 hover:text-green-900"
-                          title='Debloquer'
+                          title='Valider'
                         >
                             <Check size={35} />
                         </button>
@@ -159,9 +158,9 @@ const EditDemande = ({demande}) => {
                             <OctagonX size={35} />
                         </button>
                       </div>
-                  )}
+                  )} */}
                         <Link
-                            href={route('caissiere.demandes.all')}
+                            href={route('visiteur.demandes.all')}
                             className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Retour à la liste
@@ -217,29 +216,33 @@ const EditDemande = ({demande}) => {
                                         <dt className="text-sm font-medium text-gray-500">Montant demande</dt>
                                         <dd className="mt-1 text-lg text-gray-900">{demande.montant} FCFA</dd>
                                     </div>
-                                    <div className="overflow-hidden rounded-lg mt-1 bg-white px-4 py-5 shadow sm:p-6">
-                                        <dt className="text-sm font-medium text-gray-500">Numéro de commande</dt>
+                                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                        <dt className="text-sm font-medium text-gray-500">Numéro de compte</dt>
                                         <dd className="mt-1 text-lg text-gray-900">{demande.numero_compte}</dd>
                                     </div>
-                                </div>
-                                <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
                                     <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                                        <dt className="text-sm font-semibold text-gray-500">Mode de paiement</dt>
-                                        <dd className="mt-1 text-xl font-semibold text-gray-900 whitespace-pre-wrap">{demande.mode_paiement}</dd>
+                                        <dt className="text-xl font-medium text-gray-500">Mode de paiement</dt>
+                                        <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.mode_paiement}</dd>
                                     </div>
                                     {demande.mode_paiement == "mobile" && (
                                         <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                                            <dt className="text-sm font-semibold text-gray-500">Numéro de téléphone</dt>
+                                            <dt className="text-xl font-medium text-gray-500">Numéro de téléphone</dt>
                                             <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.phone}</dd>
                                         </div>
                                     )}
-                                     {demande.mode_paiement == "carte" && (
+                                    {demande.mode_paiement == "carte" && (
                                         <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                                            <dt className="text-sm font-semibold text-gray-500">Numéro de carte</dt>
-                                            <dd className="mt-1 text-lg font-semibold text-gray-900">{demande.numero_carte}</dd>
+                                            <dt className="text-xl font-medium text-gray-500">Numéro carte</dt>
+                                            <dd className="mt-1 text-xl font-semibold text-gray-900">{demande.numero_carte}</dd>
                                         </div>
                                     )}
                                 </div>
+                                {/* <div className="mt-5">
+                                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                                        <dt className="text-sm font-medium text-gray-500">Description</dt>
+                                        <dd className="mt-1 text-lg text-gray-900 whitespace-pre-wrap">{demande.description}</dd>
+                                    </div>
+                                </div> */}
                             </div>
 
                             <div className="mt-8">
@@ -336,7 +339,7 @@ const EditDemande = ({demande}) => {
                                         </h3>
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">
-                                                Êtes-vous sûr de vouloir valider la demande de {demandeToValidate?.first_name} {demandeToValidate?.last_name} ?
+                                                Êtes-vous sûr de vouloir accepter la demande de {demandeToValidate?.first_name} {demandeToValidate?.last_name} ?
                                                 Cette action est irréversible.
                                             </p>
                                         </div>
@@ -417,7 +420,7 @@ const EditDemande = ({demande}) => {
                     </div>
                 </div>
             )}
-    </CaissiereLayout>
+        </VisiteurLayout>
   )
 }
 

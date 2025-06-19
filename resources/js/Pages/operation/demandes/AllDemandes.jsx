@@ -327,8 +327,8 @@ const AllDemandes = ({ demandes }) => {
                                                                 if(demande.user_validateur_level === "responsable_ritel"){
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
-                                                                if(demande.user_validateur_level === "cassiere"){
-                                                                    return 'En attente (Caissiere)';
+                                                                if(demande.user_validateur_level === "charge client"){
+                                                                    return 'En attente (Charge client)';
                                                                 }
                                                             }
                                                             if (demande.status === 'accepte') {
@@ -349,8 +349,8 @@ const AllDemandes = ({ demandes }) => {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
                                                                     return 'Rejeté par Ritel';
                                                                 }
-                                                                if (demande.user_validateur_level === "cassiere") {
-                                                                    return 'Rejeté par caissiere';
+                                                                if (demande.user_validateur_level === "charge client") {
+                                                                    return 'Rejeté par charge client';
                                                                 }
                                                                 return 'Rejeté';
                                                             }

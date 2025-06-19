@@ -4,7 +4,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import { Head } from '@inertiajs/react';
 
-export default function ResponsableLayout({ header, children }) {
+export default function VisiteurLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage();
@@ -12,15 +12,15 @@ export default function ResponsableLayout({ header, children }) {
     const navigation = [
         {
             name: 'Tableau de bord',
-            href: route('responsable_ritel.dashboard'),
+            href: route('visiteur.dashboard'),
             icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-            active: route().current('responsable_ritel.dashboard')
+            active: route().current('visiteur.dashboard')
         },
         {
             name: 'Demandes',
-            href: route('responsable_ritel.demandes.all'),
+            href: route('visiteur.demandes.all'),
             icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
-            active: route().current('responsable_ritel.demandes.all')
+            active: route().current('visiteur.demandes.all')
         },
     ];
 
@@ -31,7 +31,7 @@ export default function ResponsableLayout({ header, children }) {
             {/* Sidebar */}
             <div className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-red-500 transition duration-300 ease-in-out lg:translate-x-0`}>
                 <div className="flex h-16 items-center justify-around border-b border-gray-700">
-                    <Link href="/responsable_ritel/dashboard" className="flex items-center">
+                    <Link href="/visiteur/dashboard" className="flex items-center">
                         <img src="/img/cofina.png" alt="" className='w-1/4' />
                         <span className="ml-3 text-white text-lg font-bold">CofiPharma</span>
                     </Link>

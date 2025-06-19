@@ -134,7 +134,7 @@ const AllDemandesRejetees = ({ demandes }) => {
         header={
                 <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Liste des demandes débloquées
+                        Liste des demandes rejetées
             </h2>
                     {selectedItems.length > 0 && (
                         <button
@@ -326,8 +326,8 @@ const AllDemandesRejetees = ({ demandes }) => {
                                                                 if(demande.user_validateur_level === "responsable_ritel"){
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
-                                                                if(demande.user_validateur_level === "cassiere"){
-                                                                    return 'En attente (Caissiere)';
+                                                                if(demande.user_validateur_level === "charge client"){
+                                                                    return 'En attente (Charge client)';
                                                                 }
                                                             }
                                                             if (demande.status === 'accepte') {
@@ -348,8 +348,8 @@ const AllDemandesRejetees = ({ demandes }) => {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
                                                                     return 'Rejeté par Ritel';
                                                                 }
-                                                                if (demande.user_validateur_level === "cassiere") {
-                                                                    return 'Rejeté (caissiere)';
+                                                                if (demande.user_validateur_level === "charge client") {
+                                                                    return 'Rejeté (charge client)';
                                                                 }
                                                                 return 'Rejeté';
                                                             }

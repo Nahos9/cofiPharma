@@ -314,14 +314,17 @@ const AllDemandes = ({ demandes }) => {
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                                                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                                        demande.status === 'en attente' && demande.user_validateur_level == "cassiere" ? 'bg-yellow-100 text-yellow-800' :
+                                                        demande.status === 'en attente' && demande.user_validateur_level == "charge client" ? 'bg-yellow-100 text-yellow-800' :
                                                         demande.status === 'accepte' && demande.user_validateur_level == "responsable_ritel" ? 'bg-green-100 text-green-800' :
                                                         demande.status === "debloque" && demande.user_validateur_level == "operation" ? 'bg-gray-400 text-white' :
-                                                        demande.status === "rejete" && demande.user_validateur_level == "operation" ? 'bg-red-100 text-red-800' : 'bg-red-100 text-red-800'
+                                                        demande.status === "rejete" && demande.user_validateur_level == "operation" ? 'bg-red-100 text-red-800' :
+                                                        demande.status === "rejete" && demande.user_validateur_level == "charge client" ? 'bg-red-100 text-red-800' :
+                                                        demande.status === "accepte" && demande.user_validateur_level == "operation" ? 'bg-green-100 text-green-800' :
+                                                        'bg-red-100 text-red-800'
                                                     }`}>
                                                         {(() => {
-                                                            if (demande.status === 'en attente' && demande.user_validateur_level == "cassiere") {
-                                                                return 'En attente (Cassiere)';
+                                                            if (demande.status === 'en attente' && demande.user_validateur_level == "charge client") {
+                                                                return 'En attente (charge client)';
                                                             }
                                                             if (demande.status === 'accepte' && demande.user_validateur_level == "responsable_ritel") {
                                                                 return 'En attente (Responsable Ritel)';
@@ -332,7 +335,7 @@ const AllDemandes = ({ demandes }) => {
                                                             if (demande.status === 'rejete' && demande.user_validateur_level == "operation") {
                                                                 return 'Rejeté par operation';
                                                             }
-                                                            if (demande.status === 'rejete' && demande.user_validateur_level == "cassiere") {
+                                                            if (demande.status === 'rejete' && demande.user_validateur_level == "charge client") {
                                                                 return 'Rejeté par caissiere';
                                                             }
                                                             if (demande.status === 'rejete' && demande.user_validateur_level == "responsable_ritel") {

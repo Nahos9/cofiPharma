@@ -4,15 +4,16 @@ import { useState, useMemo } from 'react'
 import { Trash, Eye } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import ResponsableLayout from '@/Layouts/ResponsableLayout';
+import VisiteurLayout from '@/Layouts/VisiteurLayout';
 
-const AllDemandesDebloques = ({ demandes }) => {
+const AllDemandes = ({ demandes }) => {
     const [selectedItems, setSelectedItems] = useState([])
     const [selectAll, setSelectAll] = useState(false)
     const [search, setSearch] = useState('')
     const [status, setStatus] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [demandeToDelete, setDemandeToDelete] = useState(null)
-    // console.log(demandes.data);
+    console.log(demandes.data);
     const filteredDemandes = useMemo(() => {
         return demandes.data.filter(demande => {
             const matchesSearch = search === '' ||
@@ -130,11 +131,11 @@ const AllDemandesDebloques = ({ demandes }) => {
 
 
   return (
-    <ResponsableLayout
+    <VisiteurLayout
         header={
                 <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Liste des demandes débloquées
+                        Gestion des demandes
             </h2>
                     {selectedItems.length > 0 && (
                         <button
@@ -228,7 +229,7 @@ const AllDemandesDebloques = ({ demandes }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* <div>
+                                <div>
                                     <label htmlFor="status" className="sr-only">Statut</label>
                                     <select
                                         id="status"
@@ -243,7 +244,7 @@ const AllDemandesDebloques = ({ demandes }) => {
                                         <option value="rejete">Rejeté</option>
                                         <option value="debloque">Débloqué</option>
                                     </select>
-                                </div> */}
+                                </div>
                             </div>
 
                             <div className="overflow-x-auto">
@@ -314,7 +315,7 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                                                         // Styles pour les différents statuts
                                                         demande.status === 'en attente' ? 'bg-yellow-100 text-yellow-800' :
-                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-blue-100 text-blue-800' :
+                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-green-100 text-green-800' :
                                                         demande.status === 'accepte' && demande.user_validateur_level === "operation" ? 'bg-green-100 text-green-800' :
                                                         demande.status === "debloque" ? 'bg-purple-100 text-purple-800' :
                                                         demande.status === "rejete" ? 'bg-red-100 text-red-800' :
@@ -322,7 +323,15 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                     }`}>
                                                         {(() => {
                                                             // Logique pour le texte des statuts
-                                                            if (demande.status === 'en attente') {
+                                                            if(demande.status === "en attente"){
+                                                                if(demande.user_validateur_level === "responsable_ritel"){
+                                                                    return 'En attente (responsable Ritel)';
+                                                                }
+                                                                if(demande.user_validateur_level === "charge client"){
+                                                                    return 'En attente (Charge client)';
+                                                                }
+                                                            }
+                                                            if (demande.status === 'accepte') {
                                                                 if(demande.user_validateur_level === "responsable_ritel"){
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
@@ -332,7 +341,7 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                             }
                                                             if (demande.status === 'accepte') {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
-                                                                    return 'En attente (Operation)';
+                                                                    return 'En attente (responsable ritel)';
                                                                 }
                                                                 if (demande.user_validateur_level === "operation") {
                                                                     return 'En attente (Operation)';
@@ -362,19 +371,19 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium flex gap-1 items-center">
                                                     <a
-                                                        href={route('demandes.edit', demande.id)}
+                                                        href={route('visiteur.demandes.edit', demande.id)}
                                                         className="text-indigo-600 hover:text-indigo-900"
                                                         title='details'
                                                     >
                                                         <Eye />
                                                     </a>
-                                                   {demande?.status == "en attente" &&  ( <button
+                                                   {/* {demande?.status == "en attente" &&  ( <button
                                                         onClick={() => handleDeleteClick(demande)}
                                                         className="text-red-600 hover:text-red-900"
                                                         title='Supprimer'
                                                     >
                                                         <Trash />
-                                                    </button>)}
+                                                    </button>)} */}
                                                 </td>
                                             </tr>
                                         ))}
@@ -434,8 +443,8 @@ const AllDemandesDebloques = ({ demandes }) => {
                 </div>
             </div>
         </div>
-</ResponsableLayout>
+</VisiteurLayout>
   )
 }
 
-export default AllDemandesDebloques
+export default AllDemandes

@@ -35,12 +35,19 @@ class AuthenticatedSessionController extends Controller
         if ($user->role === 'admin') {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }elseif($user->role === 'responsable_ritel'){
+
             return redirect()->intended(route('responsable_ritel.dashboard', absolute: false));
+
         }elseif($user->role === 'operation'){
+
             return redirect()->intended(route('operation.demandes.all', absolute: false));
-        }elseif($user->role === 'cassiere'){
+
+        }elseif($user->role == 'charge client'){
             // dd("ok");
             return redirect()->intended(route('caissiere.demandes.all', absolute: false));
+        }elseif($user->role == 'visiteur'){
+                // dd("ok");
+            return redirect()->intended(route('visiteur.dashboard', absolute: false));
         }
 
         $request->session()->regenerate();

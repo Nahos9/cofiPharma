@@ -29,7 +29,7 @@ export default function Register() {
         },
         {
             id: 2,
-            name: 'cassiere'
+            name: 'charge client'
         },
         {
             id: 3,

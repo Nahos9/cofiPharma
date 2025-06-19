@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const Demande = () => {
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [option,setOption] = useState("")
     const {data,setData,post,processing,errors} = useForm({
         first_name:"",
         last_name:"",
@@ -13,6 +14,8 @@ const Demande = () => {
         montant:"",
         numero_compte:"",
         phone:"",
+        carte:"",
+        mode_paiement:"",
         files: []
     })
 
@@ -46,10 +49,12 @@ const Demande = () => {
         formData.append('numero_compte', data.numero_compte);
         formData.append('montant', data.montant);
         formData.append('phone', data.phone);
+        formData.append('mode_paiement', option);
 
         data.files.forEach((file, index) => {
             formData.append(`files[${index}]`, file);
         });
+
 
         post(route('demandes.store'), {
             forceFormData: true,
@@ -75,6 +80,9 @@ const Demande = () => {
                     className: 'bg-green-500 text-white',
                     bodyClassName: 'font-bold',
                 });
+                setTimeout(() => {
+                    router.visit(route('welcome'))
+                }, 1500);
             },
             onError: (errors) => {
                 toast.error('Une erreur est survenue lors de l\'envoi de la demande', {
@@ -193,6 +201,48 @@ const Demande = () => {
                         />
                     </div>
 
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="montant">
+                            Mode de paiement (*)
+                        </label>
+                        <select name="" id=""
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.montant ? 'border-red-500' : ''}`}
+                        value={data.mode_paiement}
+                        onChange={(e)=>setData(prev =>({...prev,mode_paiement:e.target.value}))}
+                        >
+                            <option value="caisse">Caisse</option>
+                            <option value="mobile">Mobile monaie</option>
+                            <option value="carte">Carte prépayée</option>
+                        </select>
+                    </div>
+                    {data.mode_paiement == "mobile" && <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telephone">
+                           Numéro de téléphone (*)
+                        </label>
+                        <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="telephone"
+                            type="tel"
+                            placeholder="Votre numéro de téléphone"
+                            onChange={(e)=>{setData(prev => ({...prev, phone:e.target.value}))}}
+                            value={data.phone}
+
+                        />
+                    </div>}
+                    {data.mode_paiement == "carte" && <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telephone">
+                            Numéro de la carte (*)
+                        </label>
+                        <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="telephone"
+                            type="tel"
+                            placeholder="Votre numéro de téléphone"
+                            onChange={(e)=>{setData(prev => ({...prev, carte:e.target.value}))}}
+                            value={data.carte}
+
+                        />
+                    </div>}
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="montant">
                             Montant (*)

@@ -4,8 +4,9 @@ import { useState, useMemo } from 'react'
 import { Trash, Eye } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import ResponsableLayout from '@/Layouts/ResponsableLayout';
+import VisiteurLayout from '@/Layouts/VisiteurLayout';
 
-const AllDemandesDebloques = ({ demandes }) => {
+const AllDemandesAcceptees = ({ demandes }) => {
     const [selectedItems, setSelectedItems] = useState([])
     const [selectAll, setSelectAll] = useState(false)
     const [search, setSearch] = useState('')
@@ -130,11 +131,11 @@ const AllDemandesDebloques = ({ demandes }) => {
 
 
   return (
-    <ResponsableLayout
+    <VisiteurLayout
         header={
                 <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Liste des demandes débloquées
+                        Liste des demandes acceptées
             </h2>
                     {selectedItems.length > 0 && (
                         <button
@@ -314,7 +315,7 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                     <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                                                         // Styles pour les différents statuts
                                                         demande.status === 'en attente' ? 'bg-yellow-100 text-yellow-800' :
-                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-blue-100 text-blue-800' :
+                                                        demande.status === 'accepte' && demande.user_validateur_level === "responsable_ritel" ? 'bg-green-100 text-green-800' :
                                                         demande.status === 'accepte' && demande.user_validateur_level === "operation" ? 'bg-green-100 text-green-800' :
                                                         demande.status === "debloque" ? 'bg-purple-100 text-purple-800' :
                                                         demande.status === "rejete" ? 'bg-red-100 text-red-800' :
@@ -327,12 +328,12 @@ const AllDemandesDebloques = ({ demandes }) => {
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
                                                                 if(demande.user_validateur_level === "charge client"){
-                                                                    return 'En attente (Charge client)';
+                                                                    return 'En attente (charge client)';
                                                                 }
                                                             }
                                                             if (demande.status === 'accepte') {
                                                                 if (demande.user_validateur_level === "responsable_ritel") {
-                                                                    return 'En attente (Operation)';
+                                                                    return 'En attente (responsable Ritel)';
                                                                 }
                                                                 if (demande.user_validateur_level === "operation") {
                                                                     return 'En attente (Operation)';
@@ -434,8 +435,8 @@ const AllDemandesDebloques = ({ demandes }) => {
                 </div>
             </div>
         </div>
-</ResponsableLayout>
+</VisiteurLayout>
   )
 }
 
-export default AllDemandesDebloques
+export default AllDemandesAcceptees

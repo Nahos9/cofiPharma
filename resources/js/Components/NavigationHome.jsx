@@ -13,7 +13,7 @@ const NavigationHome = () => {
         <div className="flex justify-between w-full sm:w-auto items-center">
             <div className="flex gap-2 items-center">
                 <BriefcaseMedical size={30} />
-                <p className='text-xl sm:text-2xl font-bold'>Cofi<span className='text-xl sm:text-2xl text-red-600 font-bold'>Pharma</span></p>
+                <p className='text-xl sm:text-2xl font-bold'>Cofi<span className='text-xl sm:text-2xl text-red-600 font-bold'>Express</span></p>
             </div>
             <button
                 className="sm:hidden p-2"
@@ -43,7 +43,17 @@ const NavigationHome = () => {
                             : 'text-black hover:text-white hover:bg-red-500'
                     }`}
                 >
-                    Faire votre demande
+                    Demande cofi'Pharma
+                </Link>
+                <Link
+                    href="/#"
+                    className={`text-lg font-medium transition-colors duration-200 p-2 rounded-sm ${
+                        url === '/#'
+                            ? 'text-white bg-red-500'
+                            : 'text-black hover:text-white hover:bg-red-500'
+                    }`}
+                >
+                    Demande avance sur salaire
                 </Link>
                 {/* <Link
                     href="/contact"
