@@ -142,7 +142,7 @@ const EditDemande = ({demande}) => {
                         Détails de la demande # {demande.first_name}  {demande.last_name}
                     </h2>
                     <div className="flex space-x-4">
-                  {demande.status == "en attente"  &&  demande.user_validateur_level == "cassiere" && (
+                  {demande.status == "en attente"  &&  demande.user_validateur_level == "charge client" && (
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleValideClick(demande)}

@@ -31,9 +31,9 @@ export default function CaissiereLayout({ header, children }) {
             {/* Sidebar */}
             <div className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-red-500 transition duration-300 ease-in-out lg:translate-x-0`}>
                 <div className="flex h-16 items-center justify-around border-b border-gray-700">
-                    <Link href="/caissiere/dashboard" className="flex items-center">
+                    <Link href="/caissiere/demandes/all" className="flex items-center">
                         <img src="/img/cofina.png" alt="" className='w-1/4' />
-                        <span className="ml-3 text-white text-lg font-bold">CofiPharma</span>
+                        <span className="ml-3 text-white text-lg font-bold">CofiExpress</span>
                     </Link>
                 </div>
                 <nav className="mt-5 space-y-1 px-2">

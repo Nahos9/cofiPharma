@@ -82,7 +82,7 @@
         <div class="content">
             <h2>Décision concernant votre demande</h2>
 
-            <p>Cher(e) {{ $demande->first_name }} {{ $demande->last_name }},</p>
+            <p>Chèr(e) client(e),</p>
 
             @if($demande->status === 'accepte')
                 <div class="status-approved">

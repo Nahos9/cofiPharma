@@ -54,7 +54,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 
 });
-Route::middleware(['auth', 'verified', 'role:responsable_ritel'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:responsable_ritel|chef_agence'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function () {
     Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
 
         $dateDebut = Demande::min('created_at');

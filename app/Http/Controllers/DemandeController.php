@@ -24,7 +24,7 @@ class DemandeController extends Controller
 
     public function edit(Demande $demande)
     {
-        if(Auth::user()->role == "responsable_ritel"){
+        if(Auth::user()->role == "responsable_ritel" || Auth::user()->role == "chef_agence"){
             return Inertia::render('responsable_ritel/demandes/EditDemande', [
                 'demande' => $demande->load(['user', 'pieceJointes'])
             ]);
@@ -187,7 +187,7 @@ class DemandeController extends Controller
 
             //    }
             return redirect()->route('caissiere.demandes.all')->with('success','La demande a été rejetée avec success');
-        }elseif($status == "accepte" && $user->role == "responsable_ritel"){
+        }elseif($status == "accepte" && ($user->role == "responsable_ritel" || $user->role == "chef_agence")){
             $demande["status"] = $status;
             $demande["user_validateur_level"] = "operation";
             $demande->save();

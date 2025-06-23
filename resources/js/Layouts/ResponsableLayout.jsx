@@ -33,7 +33,7 @@ export default function ResponsableLayout({ header, children }) {
                 <div className="flex h-16 items-center justify-around border-b border-gray-700">
                     <Link href="/responsable_ritel/dashboard" className="flex items-center">
                         <img src="/img/cofina.png" alt="" className='w-1/4' />
-                        <span className="ml-3 text-white text-lg font-bold">CofiPharma</span>
+                        <span className="ml-3 text-white text-lg font-bold">CofiExpress</span>
                     </Link>
                 </div>
                 <nav className="mt-5 space-y-1 px-2">

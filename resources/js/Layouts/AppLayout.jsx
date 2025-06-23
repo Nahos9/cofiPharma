@@ -11,7 +11,7 @@ export default function AppLayout({ children, user }) {
                         <div className="flex">
                             <div className="flex-shrink-0 flex items-center">
                                 <Link href="/" className="text-xl font-bold">
-                                    Cofipharame
+                                    CofiExpress
                                 </Link>
                             </div>
                         </div>

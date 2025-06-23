@@ -10,7 +10,13 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // dd($request->user()->hasAnyRole($roles));
+        // Gérer les rôles séparés par |
+        $roles = collect($roles)
+            ->flatMap(function ($role) {
+                return explode('|', $role);
+            })
+            ->toArray();
+
         if (!$request->user() || !$request->user()->hasAnyRole($roles)) {
             abort(403, 'Accès non autorisé.');
         }

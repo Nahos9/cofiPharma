@@ -66,26 +66,26 @@
         <div class="content">
             <h2>Nouvelle demande</h2>
 
-            <p>Cher(e) client,</p>
+            <p>Chèr(e) client(e),</p>
 
-            <p>Vous avez effectué une demande de CofiPharma.</p>
+            <p>Nous accusons réception de votre demande de financement</p>
 
             <div class="details">
                 <h3>Détails de la demande :</h3>
                 <p><strong>Nom :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
-                <p><strong>Email :</strong> {{ $demande->email }}</p>
-                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p>
+                <!-- <p><strong>Email :</strong> {{ $demande->email }}</p>
+                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p> -->
                 <p><strong>Montant demandé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
                 <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
             </div>
 
-            <p>Notre équipe va étudier votre demande dans les plus brefs délais. Nous vous contacterons très prochainement pour vous donner une suite.</p>
+            <p>Notre équipe étudiera votre demande dans les plus brefs délais. Vous serez contacté(e) prochainement pour la suite à y réserver.</p>
 
-            <p>Si vous avez des questions, n'hésitez pas à nous contacter :</p>
-            <ul>
-                <li>Par téléphone : +241 65 99 01 46</li>
-                <li>Par email : service.client.ga@cofinacorp.com</li>
-            </ul>
+            <p>Pour toute question ou information complémentaire, n'hésitez pas à nous contacter :</p>
+                <ul>
+                    <li><strong>Téléphone :</strong> +241 65 99 01 46</li>
+                    <li><strong>Email :</strong> service.client.ga@cofinacorp.com</li>
+                </ul>
 
             <p>Cordialement,<br>
             L'équipe CofiPharma</p>

@@ -362,7 +362,7 @@ const AllDemandesEnAttente = ({ demandes }) => {
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium flex gap-1 items-center">
                                                     <a
-                                                        href={route('demandes.edit', demande.id)}
+                                                        href={route('responsable_ritel.demandes.edit', demande.id)}
                                                         className="text-indigo-600 hover:text-indigo-900"
                                                         title='details'
                                                     >

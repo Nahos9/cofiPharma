@@ -322,8 +322,13 @@ const AllDemandes = ({ demandes }) => {
                                                     }`}>
                                                         {(() => {
                                                             // Logique pour le texte des statuts
+                                                            if(demande.status === "en attente"){
+                                                                if(demande.user_validateur_level === "charge client"){
+                                                                    return 'En attente (Charge client)';
+                                                                }
+                                                            }
                                                             if (demande.status === 'accepte') {
-                                                                if(demande.user_validateur_level === "responsable_ritel"){
+                                                                if(demande.user_validateur_level === "responsable_ritel" || demande.user_validateur_level === "chef_agence"){
                                                                     return 'En attente (responsable Ritel)';
                                                                 }
                                                                 if(demande.user_validateur_level === "charge client"){
@@ -362,7 +367,7 @@ const AllDemandes = ({ demandes }) => {
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium flex gap-1 items-center">
                                                     <a
-                                                        href={route('demandes.edit', demande.id)}
+                                                        href={route('responsable_ritel.demandes.edit', demande.id)}
                                                         className="text-indigo-600 hover:text-indigo-900"
                                                         title='details'
                                                     >
