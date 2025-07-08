@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('av_salaires', function (Blueprint $table) {
             $table->id();
+            $table->string('numero_compte');
+            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->string('nom');
+            $table->string('prenom');
+            $table->string('montant');
+            $table->string('status')->default('en attente');
+            $table->string('user_validateur_level')->nullable();
             $table->timestamps();
         });
     }

@@ -17,16 +17,22 @@ export default function ResponsableLayout({ header, children }) {
             active: route().current('responsable_ritel.dashboard')
         },
         {
-            name: 'Demandes',
+            name: 'Cofi\'Pharma',
             href: route('responsable_ritel.demandes.all'),
             icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
             active: route().current('responsable_ritel.demandes.all')
         },
+        {
+            name: 'Avances sur salaire',
+            href: route('responsable_ritel.av_salaire.all'),
+            icon: 'M12 4v16m8-8H4',
+            active: route().current('responsable_ritel.av_salaire.all')
+        }
     ];
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <Head title="Administration" />
+            <Head title="Avances sur salaire" />
 
             {/* Sidebar */}
             <div className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-red-500 transition duration-300 ease-in-out lg:translate-x-0`}>

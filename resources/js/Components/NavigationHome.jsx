@@ -46,9 +46,9 @@ const NavigationHome = () => {
                     Demande cofi'Pharma
                 </Link>
                 <Link
-                    href="/#"
+                    href="/av_salaire"
                     className={`text-lg font-medium transition-colors duration-200 p-2 rounded-sm ${
-                        url === '/#'
+                        url === '/av_salaire'
                             ? 'text-white bg-red-500'
                             : 'text-black hover:text-white hover:bg-red-500'
                     }`}

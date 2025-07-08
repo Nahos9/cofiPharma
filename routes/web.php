@@ -8,19 +8,25 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\AvSalaireController;
 use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('welcome');
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/', function () {
+    return Inertia::render('Welcome');
+})->name('welcome');
+
+
+// Routes en rapport avec CofiPharma
 Route::post('/demandes',[DemandeController::class,'store'])->name('demandes.store');
 Route::get('/demandes',[DemandeController::class,'index'])->name('demande.index');
 Route::get('/demandes-all',[DemandeController::class,'all'])->name('demande.all');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -276,5 +282,22 @@ Route::get('/statistiques', [DemandeController::class, 'statistics'])
 Route::get('/statistiques/export', [DemandeController::class, 'exportStatistics'])
     ->middleware(['auth'])
     ->name('statistiques.export');
+
+Route::get('/av_salaire',[AvSalaireController::class,'index'])->name('av_salaire');
+Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('av_salaire.store');
+
+Route::middleware(['auth','verified','role:responsable_ritel'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function(){
+    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+});
+Route::middleware(['auth','verified','role:charge client'])->prefix('charge_client')->name('charge_client.')->group(function(){
+    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+    Route::put('/av_salaire/{id}/validate',[AvSalaireController::class,'validateAvSalaire'])->name('av_salaire.validate');
+});
+
+Route::delete('/av_salaire/{id}', [App\Http\Controllers\AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 
 require __DIR__.'/auth.php';
