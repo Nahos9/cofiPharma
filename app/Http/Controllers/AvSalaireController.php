@@ -122,7 +122,7 @@ class AvSalaireController extends Controller
         $perPage = $request->get('per_page', 15);
         $avSalaires = $query->paginate($perPage);
 
-       if(Auth::user()->role == "responsable_ritel"){
+       if(Auth::user()->role == "responsable_ritel" || Auth::user()->role == "chef_agence"){
         return Inertia::render('responsable_ritel/avSalaire/AllAvSalaire', [
             'avSalaires' => $avSalaires,
             'filters' => $request->only(['search', 'status', 'sort_by', 'sort_order', 'per_page']),
@@ -140,11 +140,29 @@ class AvSalaireController extends Controller
                 'error' => session('error'),
             ],
         ]);
+       }elseif(Auth::user()->role == "operation"){
+        return Inertia::render('operation/avSalaire/AllAvSalaire', [
+            'avSalaires' => $avSalaires,
+            'filters' => $request->only(['search', 'status', 'sort_by', 'sort_order', 'per_page']),
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
+        ]);
+       }elseif(Auth::user()->role == "visiteur"){
+        return Inertia::render('visiteur/avSalaire/AllAvSalaire', [
+            'avSalaires' => $avSalaires,
+            'filters' => $request->only(['search', 'status', 'sort_by', 'sort_order', 'per_page']),
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
+        ]);
        }
     }
     public function edit($id)
     {
-        if(Auth::user()->role == "responsable_ritel"){
+        if(Auth::user()->role == "responsable_ritel" || Auth::user()->role == "chef_agence"){
             $avSalaire = AvSalaire::with('pieceJointsAv')->findOrFail($id);
             return Inertia::render('responsable_ritel/avSalaire/EditAvSalaire', [
                 'avSalaire' => $avSalaire,
@@ -153,6 +171,18 @@ class AvSalaireController extends Controller
         elseif(Auth::user()->role == "charge client"){
             $avSalaire = AvSalaire::with('pieceJointsAv')->findOrFail($id);
             return Inertia::render('caissiere/avSalaire/EditAvSalaire', [
+                'avSalaire' => $avSalaire,
+            ]);
+        }
+        elseif(Auth::user()->role == "operation"){
+            $avSalaire = AvSalaire::with('pieceJointsAv')->findOrFail($id);
+            return Inertia::render('operation/avSalaire/EditAvSalaire', [
+                'avSalaire' => $avSalaire,
+            ]);
+        }
+        elseif(Auth::user()->role == "visiteur"){
+            $avSalaire = AvSalaire::with('pieceJointsAv')->findOrFail($id);
+            return Inertia::render('visiteur/avSalaire/EditAvSalaire', [
                 'avSalaire' => $avSalaire,
             ]);
         }
@@ -194,12 +224,22 @@ class AvSalaireController extends Controller
             $avSalaire->user_validateur_level = $user->role;
             $avSalaire->save();
             return redirect()->back()->with('success', 'Avance sur salaire rejetée avec succès.');
-        }elseif($status == "accepte" && $user->role == "responsable_ritel"){
+        }elseif($status == "accepte" && ($user->role == "responsable_ritel" || $user->role == "chef_agence")){
             $avSalaire->status = 'accepte';
             $avSalaire->user_validateur_level = "operation";
             $avSalaire->save();
             return redirect()->back()->with('success', 'Avance sur salaire validée avec succès.');
-        }elseif($status == "rejete" && $user->role == "responsable_ritel"){
+        }elseif($status == "rejete" && ($user->role == "responsable_ritel" || $user->role == "chef_agence")){
+            $avSalaire->status = 'rejete';
+            $avSalaire->user_validateur_level = $user->role;
+            $avSalaire->save();
+            return redirect()->back()->with('success', 'Avance sur salaire rejetée avec succès.');
+        }elseif($status == "debloque" && $user->role == "operation"){
+            $avSalaire->status = 'debloque';
+            $avSalaire->user_validateur_level = $user->role;
+            $avSalaire->save();
+            return redirect()->back()->with('success', 'Avance sur salaire débloquée avec succès.');
+        }elseif($status == "rejete" && $user->role == "operation"){
             $avSalaire->status = 'rejete';
             $avSalaire->user_validateur_level = $user->role;
             $avSalaire->save();

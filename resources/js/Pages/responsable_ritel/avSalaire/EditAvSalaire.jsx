@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/Components/ui/card'
 import { Badge } from '@/Components/ui/badge'
 import { Button } from '@/Components/ui/button'
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
-import { Head, Link } from '@inertiajs/react'
+import { Head, Link, router } from '@inertiajs/react'
 import { Download, User, Mail, Phone, CreditCard, Calendar, FileText } from 'lucide-react'
+import Modal from '@/Components/Modal'
+import toast, { Toaster } from 'react-hot-toast'
 
 const statusConfig = {
   'en attente': { variant: 'secondary', text: 'En attente' },
@@ -12,6 +14,7 @@ const statusConfig = {
   'rejetée': { variant: 'destructive', text: 'Rejetée' },
   'débloquée': { variant: 'default', text: 'Débloquée' }
 }
+//
 
 const formatMontant = (montant) => {
   return new Intl.NumberFormat('fr-FR', {
@@ -19,6 +22,9 @@ const formatMontant = (montant) => {
     currency: 'XOF'
   }).format(montant)
 }
+
+
+
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -37,12 +43,55 @@ const isPreviewable = (mime) => {
   ].includes(mime)
 }
 
+
+
 const EditAvSalaire = ({ avSalaire }) => {
   const status = statusConfig[avSalaire.status] || statusConfig['en attente']
+  const [showModal,setShowModal] = useState(false)
+  const [actionType,setActionType] = useState(null)
+
+const handleValidateAvSalaire = (type) => {
+    setActionType(type)
+    setShowModal(true)
+  }
+
+  const handleConfirm = () => {
+    // Ici, tu dois faire l'appel à l'API ou router.post/put selon le type
+    // Ex: router.post(route('av_salaire.validateOrReject', avSalaire.id), { status: actionType })
+    router.post(route('responsable_ritel.av_salaire.validate', avSalaire.id),{
+        _method: 'PUT',
+        status: actionType,
+    },{
+        onSuccess: () => {
+            setShowModal(false)
+            setActionType(null)
+            toast.success('La demande a été validée avec succès', {
+                duration: 2000,
+                position: 'top-right',
+                style: {
+                    background: '#10B981',
+                    color: '#fff',
+                },
+            })
+        },
+        onError: (error) => {
+            setShowModal(false)
+            setActionType(null)
+            toast.error('Une erreur est survenue lors de la validation de l\'avance sur salaire')
+        }
+    })
+  }
+
+  const handleCancel = () => {
+    setShowModal(false)
+    setActionType(null)
+  }
 
   return (
     <ResponsableLayout>
       <Head title={`Détail de l'avance sur salaire`} />
+      <Toaster />
+
       <div className="max-w-2xl mx-auto mt-8">
         <div className="mb-4 flex items-center gap-2">
           <Link href={route('responsable_ritel.av_salaire.all')}>
@@ -54,8 +103,26 @@ const EditAvSalaire = ({ avSalaire }) => {
             <CardTitle className="flex items-center gap-2">
               <User className="w-6 h-6 text-blue-600" />
               {avSalaire.nom} {avSalaire.prenom}
-              <Badge variant={status.variant}>{status.text}</Badge>
+              {avSalaire.status === 'en attente' && (
+                <Badge variant="secondary">En attente</Badge>
+              )}
+              {avSalaire.status === 'accepte' && (
+                <Badge variant="default">Acceptée</Badge>
+              )}
+              {avSalaire.status === 'rejete' && (
+                <Badge variant="destructive">Rejetée</Badge>
+              )}
+              {avSalaire.status === 'débloquée' && (
+                <Badge variant="default">Débloquée</Badge>
+              )}
+               {avSalaire.status == "accepte" && avSalaire.user_validateur_level == "responsable_ritel" && (
+                <div className="flex gap-2">
+                    <Button variant="default" size="sm" onClick={() => handleValidateAvSalaire('accepte')}>Valider</Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleValidateAvSalaire('rejete')}>Rejeter</Button>
+                </div>
+            )}
             </CardTitle>
+
             <CardDescription>
               Détail de la demande d'avance sur salaire
             </CardDescription>
@@ -125,6 +192,22 @@ const EditAvSalaire = ({ avSalaire }) => {
           </CardContent>
         </Card>
       </div>
+      <Modal show={showModal} onClose={handleCancel} maxWidth="sm">
+        <div className="p-6">
+          <h2 className="text-lg font-semibold mb-4">
+            {actionType === 'accepte' ? 'Confirmer la validation' : 'Confirmer le rejet'}
+          </h2>
+          <p className="mb-6">
+            Êtes-vous sûr de vouloir {actionType === 'accepte' ? 'valider' : 'rejeter'} cette avance sur salaire ? Cette action est irréversible.
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={handleCancel}>Annuler</Button>
+            <Button variant={actionType === 'accepte' ? 'default' : 'destructive'} onClick={handleConfirm}>
+              {actionType === 'accepte' ? 'Valider' : 'Rejeter'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </ResponsableLayout>
   )
 }

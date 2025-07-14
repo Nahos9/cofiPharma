@@ -6,10 +6,9 @@ import { Input } from '@/Components/ui/input'
 import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table'
-import { Search, Filter, Download, Eye, CheckCircle, XCircle, Clock, Trash2 } from 'lucide-react'
-import CaissiereLayout from '@/Layouts/CaissiereLayout'
+import { Search, Filter, Download, Eye, CheckCircle, XCircle, Clock, Trash } from 'lucide-react'
 import Modal from '@/Components/Modal'
-import toast, { Toaster } from 'react-hot-toast'
+import OperationLayout from '@/Layouts/OperationLayout'
 
 const AllAvSalaire = ({ avSalaires, filters }) => {
     const [search, setSearch] = useState(filters?.search || '')
@@ -19,18 +18,9 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
 
     const handleSearch = (value) => {
         setSearch(value)
-        router.get(route('responsable_ritel.av_salaire.all'), {
+        router.get(route('operation.av_salaire.all'), {
             ...filters,
             search: value,
-            page: 1
-        }, { preserveState: true })
-    }
-
-    const handleStatusFilter = (value) => {
-        setStatus(value)
-        router.get(route('responsable_ritel.av_salaire.all'), {
-            ...filters,
-            status: value,
             page: 1
         }, { preserveState: true })
     }
@@ -39,29 +29,13 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
         setToDelete(id)
         setShowModal(true)
     }
-
-    const confirmDelete = () => {
-        if (toDelete) {
-            router.delete(route('av_salaire.destroy', toDelete), {
-                onSuccess: () => {
-                    setShowModal(false)
-                    setToDelete(null)
-                    toast.success('La demande a été supprimée avec succès', {
-                        duration: 4000,
-                        position: 'top-right',
-                        style: {
-                            background: '#10B981',
-                            color: '#fff',
-                        },
-                    })
-                },
-                onError: () => {
-                    setShowModal(false)
-                    setToDelete(null)
-                    toast.error('Une erreur est survenue lors de la suppression de l\'avance sur salaire')
-                }
-            })
-        }
+    const handleStatusFilter = (value) => {
+        setStatus(value)
+        router.get(route('operation.av_salaire.all'), {
+            ...filters,
+            status: value,
+            page: 1
+        }, { preserveState: true })
     }
 
     const getStatusBadge = (status) => {
@@ -99,18 +73,41 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
             currency: 'XOF'
         }).format(montant)
     }
+    const confirmDelete = () => {
+        if (toDelete) {
+            router.delete(route('operation.av_salaire.destroy', toDelete), {
+                onSuccess: () => {
+                    setShowModal(false)
+                    setToDelete(null)
+                    toast.success('La demande a été supprimée avec succès', {
+                        duration: 4000,
+                        position: 'top-right',
+                        style: {
+                            background: '#10B981',
+                            color: '#fff',
+                        },
+                    })
+                },
+                onError: () => {
+                    setShowModal(false)
+                    setToDelete(null)
+                    toast.error('Une erreur est survenue lors de la suppression de l\'avance sur salaire')
+                }
+            })
+        }
+    }
 
     return (
-        <CaissiereLayout>
+        <OperationLayout>
             <Head title="Gestion des avances sur salaire" />
-            <Toaster />
+
             <div className="space-y-6">
                 {/* En-tête */}
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">Gestion des avances sur salaire</h1>
                         <p className="text-gray-600 mt-1">
-                            Gérez toutes les demandes d'avances sur salaire
+                            Gérez toutes les demandes d'avances sur salaire des employés
                         </p>
                     </div>
                     {/* <Link href={route('av_salaire')}>
@@ -147,7 +144,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                             >
                                 <option value="">Tous les statuts</option>
                                 <option value="en attente">En attente</option>
-                                <option value="acceptée">Acceptée</option>
+                                <option value="accepte">Acceptée</option>
                                 <option value="rejetée">Rejetée</option>
                                 <option value="débloquée">Débloquée</option>
                             </select>
@@ -157,7 +154,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                 onClick={() => {
                                     setSearch('')
                                     setStatus('')
-                                    router.get(route('charge_client.av_salaire.all'))
+                                    router.get(route('operation.av_salaire.all'))
                                 }}
                             >
                                 Réinitialiser
@@ -179,9 +176,9 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Nom et prénom </TableHead>
-                                        {/* <TableHead>Email</TableHead>
-                                        <TableHead>Numéro de téléphone</TableHead>
-                                        <TableHead>Numéro de compte bancaire</TableHead> */}
+                                        {/* <TableHead>Email</TableHead> */}
+                                        {/* <TableHead>Numéro de téléphone</TableHead> */}
+                                        {/* <TableHead>Numéro de compte bancaire</TableHead> */}
                                         <TableHead>Montant</TableHead>
                                         <TableHead>Statut</TableHead>
                                         <TableHead>Date de demande</TableHead>
@@ -209,13 +206,13 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                                             {avSalaire.email}
                                                         </div>
                                                     </div>
-                                                </TableCell>
-                                                <TableCell>
+                                                </TableCell> */}
+                                                {/* <TableCell>
                                                     <div className="text-sm text-gray-600">
                                                         {avSalaire.phone}
                                                     </div>
-                                                </TableCell> */}
-                                                {/* <TableCell>
+                                                </TableCell>
+                                                <TableCell>
                                                     <code className="bg-gray-100 px-2 py-1 rounded text-sm">
                                                         {avSalaire.numero_compte}
                                                     </code>
@@ -228,7 +225,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                                 <TableCell>
                                                      <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                                                         avSalaire.status === 'en attente' && avSalaire.user_validateur_level == "charge client" ? 'bg-yellow-100 text-yellow-800' :
-                                                        avSalaire.status === 'accepte' && avSalaire.user_validateur_level == "responsable_ritel" ? 'bg-green-100 text-green-800' :
+                                                        avSalaire.status === 'accepte' && avSalaire.user_validateur_level == "operation" ? 'bg-green-100 text-green-800' :
                                                         avSalaire.status === "debloque" && avSalaire.user_validateur_level == "operation" ? 'bg-gray-400 text-white' :
                                                         avSalaire.status === "rejete" && avSalaire.user_validateur_level == "operation" ? 'bg-red-100 text-red-800' :
                                                         avSalaire.status === "rejete" && avSalaire.user_validateur_level == "charge client" ? 'bg-red-100 text-red-800' :
@@ -240,7 +237,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                                                 return 'En attente (chargé(e) de clientèle)';
                                                             }
                                                             if (avSalaire.status === 'accepte' && avSalaire.user_validateur_level == "responsable_ritel") {
-                                                                return 'En attente (Responsable Ritel)';
+                                                                return 'En attente (Responsable Ritel | Chef d\'agence)';
                                                             }
                                                             if (avSalaire.status === 'accepte' && avSalaire.user_validateur_level == "operation") {
                                                                 return 'En attente (Operation)';
@@ -252,7 +249,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                                                 return 'Rejeté par chargé(e) de clientèle';
                                                             }
                                                             if (avSalaire.status === 'rejete' && avSalaire.user_validateur_level == "responsable_ritel") {
-                                                                return 'Rejeté par responsable Ritel';
+                                                                return 'Rejeté par responsable Ritel | Chef d\'agence';
                                                             }
                                                             if (avSalaire.status === "debloque") {
                                                                 return 'Débloqué';
@@ -270,31 +267,20 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                                                         <Link
                                                             variant="outline"
                                                             size="sm"
-                                                            href={route('charge_client.av_salaire.edit', avSalaire.id)}
+                                                            href={route('operation.av_salaire.edit', avSalaire.id)}
                                                         >
                                                             <Eye className="w-4 h-4" />
                                                         </Link>
 
-                                                        {/* {avSalaire.piece_joints_av && avSalaire.piece_joints_av.length > 0 && (
+                                                        {avSalaire.status === 'en attente' && (
                                                             <Button
-                                                                variant="outline"
+                                                                variant="destructive"
                                                                 size="sm"
-                                                                onClick={() => {
-                                                                    console.log('Télécharger pièces jointes:', avSalaire.piece_joints_av)
-                                                                }}
+                                                                onClick={() => handleDelete(avSalaire.id)}
                                                             >
-                                                                <Download className="w-4 h-4" />
+                                                                <Trash className="w-4 h-4" />
                                                             </Button>
-                                                        )} */}
-                                                      {avSalaire.status == "en attente"  && (
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            onClick={() => handleDelete(avSalaire.id)}
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                      )}
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -331,7 +317,6 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                     </CardContent>
                 </Card>
             </div>
-
             <Modal show={showModal} onClose={() => setShowModal(false)}>
                 <div className="p-6">
                     <h2 className="text-lg font-bold mb-4">Confirmer la suppression</h2>
@@ -346,7 +331,7 @@ const AllAvSalaire = ({ avSalaires, filters }) => {
                     </div>
                 </div>
             </Modal>
-        </CaissiereLayout>
+        </OperationLayout>
     )
 }
 

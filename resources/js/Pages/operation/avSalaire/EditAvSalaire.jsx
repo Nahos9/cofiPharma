@@ -5,9 +5,9 @@ import { Button } from '@/Components/ui/button'
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
 import { Head, Link, router } from '@inertiajs/react'
 import { Download, User, Mail, Phone, CreditCard, Calendar, FileText } from 'lucide-react'
-import CaissiereLayout from '@/Layouts/CaissiereLayout'
 import Modal from '@/Components/Modal'
 import toast, { Toaster } from 'react-hot-toast'
+import OperationLayout from '@/Layouts/OperationLayout'
 
 const statusConfig = {
   'en attente': { variant: 'secondary', text: 'En attente' },
@@ -15,6 +15,7 @@ const statusConfig = {
   'rejetée': { variant: 'destructive', text: 'Rejetée' },
   'débloquée': { variant: 'default', text: 'Débloquée' }
 }
+//
 
 const formatMontant = (montant) => {
   return new Intl.NumberFormat('fr-FR', {
@@ -22,6 +23,9 @@ const formatMontant = (montant) => {
     currency: 'XOF'
   }).format(montant)
 }
+
+
+
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -40,12 +44,14 @@ const isPreviewable = (mime) => {
   ].includes(mime)
 }
 
+
+
 const EditAvSalaire = ({ avSalaire }) => {
   const status = statusConfig[avSalaire.status] || statusConfig['en attente']
-  const [showModal, setShowModal] = useState(false)
-  const [actionType, setActionType] = useState(null) // 'accepte' ou 'rejete'
+  const [showModal,setShowModal] = useState(false)
+  const [actionType,setActionType] = useState(null)
 
-  const handleValidateAvSalaire = (type) => {
+const handleValidateAvSalaire = (type) => {
     setActionType(type)
     setShowModal(true)
   }
@@ -53,14 +59,14 @@ const EditAvSalaire = ({ avSalaire }) => {
   const handleConfirm = () => {
     // Ici, tu dois faire l'appel à l'API ou router.post/put selon le type
     // Ex: router.post(route('av_salaire.validateOrReject', avSalaire.id), { status: actionType })
-    router.post(route('charge_client.av_salaire.validate', avSalaire.id),{
+    router.post(route('operation.av_salaire.validate', avSalaire.id),{
         _method: 'PUT',
         status: actionType,
     },{
         onSuccess: () => {
             setShowModal(false)
             setActionType(null)
-            toast.success('La demande a été validée avec succès', {
+            toast.success('La demande a été débloquée avec succès', {
                 duration: 2000,
                 position: 'top-right',
                 style: {
@@ -72,7 +78,7 @@ const EditAvSalaire = ({ avSalaire }) => {
         onError: (error) => {
             setShowModal(false)
             setActionType(null)
-            toast.error('Une erreur est survenue lors de la validation de l\'avance sur salaire')
+            toast.error('Une erreur est survenue lors de la déblocage de l\'avance sur salaire')
         }
     })
   }
@@ -83,13 +89,13 @@ const EditAvSalaire = ({ avSalaire }) => {
   }
 
   return (
-    <CaissiereLayout>
+    <OperationLayout>
       <Head title={`Détail de l'avance sur salaire`} />
       <Toaster />
 
       <div className="max-w-2xl mx-auto mt-8">
         <div className="mb-4 flex items-center gap-2">
-          <Link href={route('charge_client.av_salaire.all')}>
+          <Link href={route('operation.av_salaire.all')}>
             <Button variant="outline" size="sm">&larr; Retour</Button>
           </Link>
         </div>
@@ -107,16 +113,17 @@ const EditAvSalaire = ({ avSalaire }) => {
               {avSalaire.status === 'rejete' && (
                 <Badge variant="destructive">Rejetée</Badge>
               )}
-              {avSalaire.status === 'débloque' && (
-                <Badge variant="default">Débloquée</Badge>
+              {avSalaire.status === 'debloque' && (
+                <Badge variant="green" className="bg-blue-500 text-white">Débloquée</Badge>
               )}
-             {avSalaire.status === 'en attente' && (
-              <div className="flex gap-2">
-                <Button variant="default" size="sm" onClick={() => handleValidateAvSalaire('accepte')}>Valider</Button>
-                <Button variant="destructive" size="sm" onClick={() => handleValidateAvSalaire('rejete')}>Rejeter</Button>
-              </div>
-             )}
+               {avSalaire.status == "accepte" && avSalaire.user_validateur_level == "operation" && (
+                <div className="flex gap-2">
+                    <Button variant="default" size="sm" onClick={() => handleValidateAvSalaire('debloque')}>Débloquer</Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleValidateAvSalaire('rejete')}>Rejeter</Button>
+                </div>
+            )}
             </CardTitle>
+
             <CardDescription>
               Détail de la demande d'avance sur salaire
             </CardDescription>
@@ -189,20 +196,20 @@ const EditAvSalaire = ({ avSalaire }) => {
       <Modal show={showModal} onClose={handleCancel} maxWidth="sm">
         <div className="p-6">
           <h2 className="text-lg font-semibold mb-4">
-            {actionType === 'accepte' ? 'Confirmer la validation' : 'Confirmer le rejet'}
+            {actionType === 'debloque' ? 'Confirmer le déblocage' : 'Confirmer le rejet'}
           </h2>
           <p className="mb-6">
-            Êtes-vous sûr de vouloir {actionType === 'accepte' ? 'valider' : 'rejeter'} cette avance sur salaire ? Cette action est irréversible.
+            Êtes-vous sûr de vouloir {actionType === 'debloque' ? 'debloquer' : 'rejeter'} cette avance sur salaire ? Cette action est irréversible.
           </p>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={handleCancel}>Annuler</Button>
-            <Button variant={actionType === 'accepte' ? 'default' : 'destructive'} onClick={handleConfirm}>
-              {actionType === 'accepte' ? 'Valider' : 'Rejeter'}
+            <Button variant={actionType === 'debloque' ? 'default' : 'destructive'} onClick={handleConfirm}>
+              {actionType === 'debloque' ? 'Débloquer' : 'Rejeter'}
             </Button>
           </div>
         </div>
       </Modal>
-    </CaissiereLayout>
+    </OperationLayout>
   )
 }
 

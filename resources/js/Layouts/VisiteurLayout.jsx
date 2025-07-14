@@ -22,6 +22,12 @@ export default function VisiteurLayout({ header, children }) {
             icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
             active: route().current('visiteur.demandes.all')
         },
+        {
+            name: 'Avances sur salaire',
+            href: route('visiteur.av_salaire.all'),
+            icon: 'M12 4v16m8-8H4',
+            active: route().current('visiteur.av_salaire.all')
+        }
     ];
 
     return (

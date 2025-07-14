@@ -156,15 +156,24 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel|chef_agence'])->p
     Route::get('/demandes/all-acceptees', [DemandeController::class, 'allDemandesAcceptees'])->name('demandes.all-acceptees');
     Route::get('/demandes/all-en-attente', [DemandeController::class, 'allDemandesEnAttente'])->name('demandes.all-en-attente');
     Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+    Route::put('/av_salaire/{id}/validate',[AvSalaireController::class,'validateAvSalaire'])->name('av_salaire.validate');
+    Route::delete('/av_salaire/{id}', [AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 });
 
 Route::middleware(['auth', 'verified', 'role:operation'])->prefix('operation')->name('operation.')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('operation/DashboardOperation');
     })->name('dashboard');
-
     Route::get('/demandes/all', [DemandeController::class, 'all'])->name('demandes.all');
     Route::get('/demandes/{demande}/edit', [DemandeController::class, 'edit'])->name('demandes.edit');
+    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+    Route::put('/av_salaire/{id}/validate',[AvSalaireController::class,'validateAvSalaire'])->name('av_salaire.validate');
+    Route::delete('/av_salaire/{id}', [AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 
 });
 
@@ -274,6 +283,11 @@ Route::middleware(['auth', 'verified', 'role:visiteur'])->prefix('visiteur')->na
     Route::get('/demandes/all-acceptees', [DemandeController::class, 'allDemandesAcceptees'])->name('demandes.all-acceptees');
     Route::get('/demandes/all-en-attente', [DemandeController::class, 'allDemandesEnAttente'])->name('demandes.all-en-attente');
 
+
+    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+
 });
 Route::get('/statistiques', [DemandeController::class, 'statistics'])
     ->middleware(['auth'])
@@ -287,17 +301,19 @@ Route::get('/av_salaire',[AvSalaireController::class,'index'])->name('av_salaire
 Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('av_salaire.store');
 
 Route::middleware(['auth','verified','role:responsable_ritel'])->prefix('responsable_ritel')->name('responsable_ritel.')->group(function(){
-    Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
-    Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
-    Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+    // Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
+    // Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
+    // Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
+    // Route::put('/av_salaire/{id}/validate',[AvSalaireController::class,'validateAvSalaire'])->name('av_salaire.validate');
+    // Route::delete('/av_salaire/{id}', [AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 });
 Route::middleware(['auth','verified','role:charge client'])->prefix('charge_client')->name('charge_client.')->group(function(){
     Route::get('/av_salaire',[AvSalaireController::class,'all'])->name('av_salaire.all');
     Route::post('/av_salaire',[AvSalaireController::class,'store'])->name('store.av_salaire');
     Route::get('/av_salaire/{id}/edit',[AvSalaireController::class,'edit'])->name('av_salaire.edit');
     Route::put('/av_salaire/{id}/validate',[AvSalaireController::class,'validateAvSalaire'])->name('av_salaire.validate');
+    Route::delete('/av_salaire/{id}', [AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 });
 
-Route::delete('/av_salaire/{id}', [App\Http\Controllers\AvSalaireController::class, 'destroy'])->name('av_salaire.destroy');
 
 require __DIR__.'/auth.php';

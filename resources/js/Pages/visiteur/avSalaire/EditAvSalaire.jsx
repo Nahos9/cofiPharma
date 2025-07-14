@@ -5,9 +5,9 @@ import { Button } from '@/Components/ui/button'
 import ResponsableLayout from '@/Layouts/ResponsableLayout'
 import { Head, Link, router } from '@inertiajs/react'
 import { Download, User, Mail, Phone, CreditCard, Calendar, FileText } from 'lucide-react'
-import CaissiereLayout from '@/Layouts/CaissiereLayout'
 import Modal from '@/Components/Modal'
 import toast, { Toaster } from 'react-hot-toast'
+import VisiteurLayout from '@/Layouts/VisiteurLayout'
 
 const statusConfig = {
   'en attente': { variant: 'secondary', text: 'En attente' },
@@ -15,6 +15,7 @@ const statusConfig = {
   'rejetée': { variant: 'destructive', text: 'Rejetée' },
   'débloquée': { variant: 'default', text: 'Débloquée' }
 }
+//
 
 const formatMontant = (montant) => {
   return new Intl.NumberFormat('fr-FR', {
@@ -22,6 +23,9 @@ const formatMontant = (montant) => {
     currency: 'XOF'
   }).format(montant)
 }
+
+
+
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -40,12 +44,14 @@ const isPreviewable = (mime) => {
   ].includes(mime)
 }
 
+
+
 const EditAvSalaire = ({ avSalaire }) => {
   const status = statusConfig[avSalaire.status] || statusConfig['en attente']
-  const [showModal, setShowModal] = useState(false)
-  const [actionType, setActionType] = useState(null) // 'accepte' ou 'rejete'
+  const [showModal,setShowModal] = useState(false)
+  const [actionType,setActionType] = useState(null)
 
-  const handleValidateAvSalaire = (type) => {
+const handleValidateAvSalaire = (type) => {
     setActionType(type)
     setShowModal(true)
   }
@@ -53,7 +59,7 @@ const EditAvSalaire = ({ avSalaire }) => {
   const handleConfirm = () => {
     // Ici, tu dois faire l'appel à l'API ou router.post/put selon le type
     // Ex: router.post(route('av_salaire.validateOrReject', avSalaire.id), { status: actionType })
-    router.post(route('charge_client.av_salaire.validate', avSalaire.id),{
+    router.post(route('responsable_ritel.av_salaire.validate', avSalaire.id),{
         _method: 'PUT',
         status: actionType,
     },{
@@ -83,13 +89,13 @@ const EditAvSalaire = ({ avSalaire }) => {
   }
 
   return (
-    <CaissiereLayout>
+    <VisiteurLayout>
       <Head title={`Détail de l'avance sur salaire`} />
       <Toaster />
 
       <div className="max-w-2xl mx-auto mt-8">
         <div className="mb-4 flex items-center gap-2">
-          <Link href={route('charge_client.av_salaire.all')}>
+          <Link href={route('visiteur.av_salaire.all')}>
             <Button variant="outline" size="sm">&larr; Retour</Button>
           </Link>
         </div>
@@ -110,13 +116,14 @@ const EditAvSalaire = ({ avSalaire }) => {
               {avSalaire.status === 'débloque' && (
                 <Badge variant="default">Débloquée</Badge>
               )}
-             {avSalaire.status === 'en attente' && (
-              <div className="flex gap-2">
-                <Button variant="default" size="sm" onClick={() => handleValidateAvSalaire('accepte')}>Valider</Button>
-                <Button variant="destructive" size="sm" onClick={() => handleValidateAvSalaire('rejete')}>Rejeter</Button>
-              </div>
-             )}
+               {/* {avSalaire.status == "accepte" && avSalaire.user_validateur_level == "responsable_ritel" && (
+                <div className="flex gap-2">
+                    <Button variant="default" size="sm" onClick={() => handleValidateAvSalaire('accepte')}>Valider</Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleValidateAvSalaire('rejete')}>Rejeter</Button>
+                </div>
+            )} */}
             </CardTitle>
+
             <CardDescription>
               Détail de la demande d'avance sur salaire
             </CardDescription>
@@ -202,7 +209,7 @@ const EditAvSalaire = ({ avSalaire }) => {
           </div>
         </div>
       </Modal>
-    </CaissiereLayout>
+    </VisiteurLayout>
   )
 }
 
