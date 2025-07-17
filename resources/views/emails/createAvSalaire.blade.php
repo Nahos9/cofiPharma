@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nouvelle demande à traiter - CofiPharma</title>
+    <title>Nouvelle demande à traiter - Avance sur salaire</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -84,13 +84,13 @@
 
             <div class="details">
                 <h3>Informations du demandeur :</h3>
-                <p><strong>Nom complet :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
-                <p> <strong>Numéro de compte : </strong> {{ $demande->numero_compte }}</p>
-                <p><strong>Email :</strong> {{ $demande->email }}</p>
-                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p>
-                <p><strong>Montant demandé :</strong> <span class="priority">{{ number_format($demande->montant, 2, ',', ' ') }} FCFA</span></p>
-                <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
-                <p><strong>ID de la demande :</strong> #{{ $demande->id }}</p>
+                <p><strong>Nom complet :</strong> {{ $avSalaire->nom }} {{ $avSalaire->prenom }}</p>
+                <p> <strong>Numéro de compte : </strong> {{ $avSalaire->numero_compte }}</p>
+                <p><strong>Email :</strong> {{ $avSalaire->email }}</p>
+                <p><strong>Téléphone :</strong> {{ $avSalaire->phone }}</p>
+                <p><strong>Montant demandé :</strong> <span class="priority">{{ number_format($avSalaire->montant, 2, ',', ' ') }} FCFA</span></p>
+                <p><strong>Date de la demande :</strong> {{ $avSalaire->created_at->format('d/m/Y H:i') }}</p>
+                <p><strong>ID de la demande :</strong> #{{ $avSalaire->id }}</p>
             </div>
 
             <p>Veuillez traiter cette demande dans les plus brefs délais. Vous pouvez accéder à la demande complète via le tableau de bord administratif.</p>

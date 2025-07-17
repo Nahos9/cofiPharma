@@ -38,7 +38,16 @@ export default function Register() {
         {
             id: 4,
             name: 'operation'
+        },
+        {
+            id: 5,
+            name: 'chef_agence'
+        },
+        {
+            id: 6,
+            name: 'visiteur'
         }
+
     ]
     return (
         <GuestLayout>

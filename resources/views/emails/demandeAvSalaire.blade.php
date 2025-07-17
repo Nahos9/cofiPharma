@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation de votre demande -  CofiExpress</title>
+    <title>Confirmation de votre demande - CofiPharma</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,19 +64,17 @@
         </div>
 
         <div class="content">
-            <h2>Nouvelle demande</h2>
+            <h2>Confirmation de demande</h2>
 
             <p>Chèr(e) client(e),</p>
 
-            <p>Nous accusons réception de votre demande de financement</p>
+            <p>Nous accusons réception de votre demande d'avance sur salaire.</p>
 
             <div class="details">
                 <h3>Détails de la demande :</h3>
-                <p><strong>Nom :</strong> {{ $demande->first_name }} {{ $demande->last_name }}</p>
-                <!-- <p><strong>Email :</strong> {{ $demande->email }}</p>
-                <p><strong>Téléphone :</strong> {{ $demande->phone }}</p> -->
-                <p><strong>Montant demandé :</strong> {{ number_format($demande->montant, 2, ',', ' ') }} FCFA</p>
-                <p><strong>Date de la demande :</strong> {{ $demande->created_at->format('d/m/Y H:i') }}</p>
+                <p><strong>Nom :</strong> {{ $avSalaire->first_name }} {{ $avSalaire->last_name }}</p>
+                <p><strong>Montant demandé :</strong> {{ number_format($avSalaire->montant, 2, ',', ' ') }} FCFA</p>
+                <p><strong>Date de la demande :</strong> {{ $avSalaire->created_at->format('d/m/Y H:i') }}</p>
             </div>
 
             <p>Notre équipe étudiera votre demande dans les plus brefs délais. Vous serez contacté(e) prochainement pour la suite à y réserver.</p>

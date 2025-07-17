@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('prenom');
             $table->string('montant');
             $table->string('status')->default('en attente');
+            $table->string('is_deleted')->default(false);
             $table->string('user_validateur_level')->nullable();
             $table->timestamps();
         });

@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CreateAvSalaireMail;
+use App\Mail\DemandeAvSalaireMail;
+use App\Mail\ValidateAvSalaireMail;
 use App\Models\AvSalaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class AvSalaireController extends Controller
 {
@@ -71,6 +76,7 @@ class AvSalaireController extends Controller
             $avSalaire->numero_compte = $validated['numero_compte'];
             $avSalaire->montant = $validated['montant'];
             $avSalaire->status = 'en attente';
+            $avSalaire->user_validateur_level = "charge client";
             $avSalaire->save();
 
             // Gestion des fichiers joints
@@ -87,6 +93,18 @@ class AvSalaireController extends Controller
                 }
             }
 
+           try{
+
+               $avSalaire->load('pieceJointsAv');
+
+               Mail::to('nahos.igalo@cofinacorp.com')->send(new CreateAvSalaireMail($avSalaire));
+
+               Mail::to($avSalaire->email)->send(new DemandeAvSalaireMail($avSalaire));
+
+
+           }catch(\Exception $e){
+            Log::error('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+           }
             return back()->with('success', '🎉 Félicitations ! Votre demande a été envoyée avec succès.');
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la soumission de la demande: ' . $e->getMessage());
@@ -237,12 +255,28 @@ class AvSalaireController extends Controller
         }elseif($status == "debloque" && $user->role == "operation"){
             $avSalaire->status = 'debloque';
             $avSalaire->user_validateur_level = $user->role;
+
+            try
+            {
+                Mail::to($avSalaire->email)->send(new ValidateAvSalaireMail($avSalaire));
+            }catch(\Exception $e){
+                Log::error('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+            }
+
             $avSalaire->save();
             return redirect()->back()->with('success', 'Avance sur salaire débloquée avec succès.');
         }elseif($status == "rejete" && $user->role == "operation"){
             $avSalaire->status = 'rejete';
             $avSalaire->user_validateur_level = $user->role;
+
+            try{
+                Mail::to($avSalaire->email)->send(new ValidateAvSalaireMail($avSalaire));
+            }catch(\Exception $e){
+                Log::error('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+            }
+
             $avSalaire->save();
+
             return redirect()->back()->with('success', 'Avance sur salaire rejetée avec succès.');
         }
     }
