@@ -127,6 +127,45 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel|chef_agence'])->p
 
         // Moyenne des montants
         $moyenneMontant = $totalDemandes > 0 ? $montantTotal / $totalDemandes : 0;
+
+        // Statistiques avSalaires FILTRÉES PAR DATE
+        $avSalaireQuery = \App\Models\AvSalaire::where('is_deleted', 0)
+            ->whereBetween('created_at', [
+                $dateDebut . ' 00:00:00',
+                $dateFin . ' 23:59:59'
+            ]);
+
+        $totalAvSalaires = $avSalaireQuery->count();
+        $montantTotalAvSalaires = (clone $avSalaireQuery)->sum('montant');
+        $avSalairesEnAttente = (clone $avSalaireQuery)->where('status', 'en attente')->count();
+        $avSalairesValidees = (clone $avSalaireQuery)->where('status', 'accepte')->count();
+        $avSalairesRejetees = (clone $avSalaireQuery)->where('status', 'rejete')->count();
+        $avSalairesDebloquees = (clone $avSalaireQuery)->where('status', 'debloque')->count();
+        $montantEnAttenteAv = (clone $avSalaireQuery)->where('status', 'en attente')->sum('montant');
+        $montantValideAv = (clone $avSalaireQuery)->where('status', 'accepte')->sum('montant');
+        $montantRejeteAv = (clone $avSalaireQuery)->where('status', 'rejete')->sum('montant');
+        $montantDebloqueAv = (clone $avSalaireQuery)->where('status', 'debloque')->sum('montant');
+
+        // Statistiques avSalaires par jour
+        $avSalairesParJour = (clone $avSalaireQuery)
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Statistiques avSalaires par statut
+        $statAvParStatut = (clone $avSalaireQuery)
+            ->selectRaw('status, COUNT(*) as total, SUM(montant) as montant_total')
+            ->groupBy('status')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->status => [
+                    'total' => $item->total,
+                    'montant_total' => $item->montant_total
+                ]];
+            })
+            ->toArray();
+
         return Inertia::render('responsable_ritel/DashboardRitel',
         [
             'statistiques' => [
@@ -145,7 +184,22 @@ Route::middleware(['auth', 'verified', 'role:responsable_ritel|chef_agence'])->p
                 'filtres' => [
                     'date_debut' => $dateDebut,
                     'date_fin' => $dateFin
-                ]
+                ],
+                // Ajout des stats avSalaires
+                'avSalaires' => [
+                    'total' => $totalAvSalaires,
+                    'montantTotal' => $montantTotalAvSalaires,
+                    'enAttente' => $avSalairesEnAttente,
+                    'validees' => $avSalairesValidees,
+                    'rejetees' => $avSalairesRejetees,
+                    'debloquees' => $avSalairesDebloquees,
+                    'montantEnAttente' => $montantEnAttenteAv,
+                    'montantValide' => $montantValideAv,
+                    'montantRejete' => $montantRejeteAv,
+                    'montantDebloque' => $montantDebloqueAv,
+                    'parJour' => $avSalairesParJour,
+                    'parStatut' => $statAvParStatut,
+                ],
             ]
         ]);
     })->name('dashboard');

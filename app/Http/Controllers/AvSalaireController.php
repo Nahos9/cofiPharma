@@ -95,7 +95,7 @@ class AvSalaireController extends Controller
 
            try{
 
-               $avSalaire->load('pieceJointsAv');
+            //    $avSalaire->load('pieceJointsAv');
 
                Mail::to('nahos.igalo@cofinacorp.com')->send(new CreateAvSalaireMail($avSalaire));
 

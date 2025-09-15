@@ -52,19 +52,21 @@ class CreateAvSalaireMail extends Mailable
      */
     public function attachments(): array
     {
-        $attachments = [];
+        // $attachments = [];
 
-        if ($this->avSalaire->pieceJointsAv) {
-            foreach ($this->avSalaire->pieceJointsAv as $pieceJointe) {
-                $path = Storage::disk('public')->path($pieceJointe->chemin_fichier);
-                if (file_exists($path)) {
-                    $attachments[] = Attachment::fromPath($path)
-                        ->as($pieceJointe->nom_fichier)
-                        ->withMime($pieceJointe->type_mime);
-                }
-            }
-        }
+        // // dd($this->avSalaire->pieceJointsAv);
+        // if ($this->avSalaire->pieceJointsAv) {
+        //     foreach ($this->avSalaire->pieceJointsAv as $pieceJointe) {
+        //         $path = Storage::disk('public')->path($pieceJointe->chemin_fichier);
+        //         if (file_exists($path)) {
+        //             $attachments[] = Attachment::fromPath($path)
+        //                 ->as($pieceJointe->nom_fichier)
+        //                 ->withMime($pieceJointe->type_mime);
+        //         }
+        //     }
+        // }
 
-        return $attachments;
+        // return $attachments;
+        return [];
     }
 }

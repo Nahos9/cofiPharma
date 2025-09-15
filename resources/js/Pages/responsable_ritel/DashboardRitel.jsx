@@ -167,6 +167,89 @@ const DashboardRitel = ({ statistiques }) => {
         },
     };
 
+    // Données graphiques avSalaires
+    const avSalaireLineData = useMemo(() => ({
+        labels: statistiques?.avSalaires?.parJour?.map(item => item.date),
+        datasets: [
+            {
+                label: 'Avances par jour',
+                data: statistiques?.avSalaires?.parJour?.map(item => item.total),
+                borderColor: 'rgb(153, 102, 255)',
+                tension: 0.4,
+                fill: false,
+            },
+            {
+                label: 'Montant total par jour',
+                data: statistiques?.avSalaires?.parJour?.map(item => item.montant_total),
+                borderColor: 'rgb(255, 159, 64)',
+                tension: 0.4,
+                yAxisID: 'y1',
+                fill: false,
+            }
+        ],
+    }), [statistiques]);
+
+    const avSalairePieData = useMemo(() => {
+        const stat = statistiques?.avSalaires?.parStatut || {};
+        return {
+            labels: ['En attente', 'Validées', 'Rejetées', 'Débloquées'],
+            datasets: [{
+                data: [
+                    stat['en attente']?.total || 0,
+                    stat['accepte']?.total || 0,
+                    stat['rejete']?.total || 0,
+                    stat['debloque']?.total || 0
+                ],
+                backgroundColor: [
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)'
+                ],
+            }]
+        };
+    }, [statistiques]);
+
+    const avSalaireChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Évolution des avances sur salaires',
+                font: {
+                    size: 16
+                }
+            },
+        },
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Nombre d\'avances'
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Montant total'
+                },
+                grid: {
+                    drawOnChartArea: false,
+                },
+            },
+        },
+    };
+
     return (
         <ResponsableLayout header="Tableau de bord">
             <Head title="Tableau de bord" />
@@ -273,12 +356,70 @@ const DashboardRitel = ({ statistiques }) => {
                 </Grid>
             </Grid>
 
+            {/* Cartes avSalaires */}
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Total Avances sur salaire"
+                        value={statistiques?.avSalaires?.total}
+                        subtitle={`Montant total: ${statistiques?.avSalaires?.montantTotal?.toLocaleString()} FCFA`}
+                        bg=""
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Avances en attente"
+                        value={statistiques?.avSalaires?.enAttente}
+                        color="warning.main"
+                        bg="#FFCD56"
+                        subtitle={`Montant: ${statistiques?.avSalaires?.montantEnAttente?.toLocaleString()} FCFA`}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Avances validées"
+                        value={statistiques?.avSalaires?.validees}
+                        color="success.main"
+                        bg='#4bc0c0'
+                        subtitle={`Montant: ${statistiques?.avSalaires?.montantValide?.toLocaleString()} FCFA`}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Avances débloquées"
+                        value={statistiques?.avSalaires?.debloquees}
+                        color="info.main"
+                        bg='#36A2EB'
+                        subtitle={`Montant: ${statistiques?.avSalaires?.montantDebloque?.toLocaleString()} FCFA`}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4} lg={2.4}>
+                    <StatCard
+                        title="Avances rejetées"
+                        value={statistiques?.avSalaires?.rejetees}
+                        color="error.main"
+                        bg='#ff6384'
+                        subtitle={`Montant: ${statistiques?.avSalaires?.montantRejete?.toLocaleString()} FCFA`}
+                    />
+                </Grid>
+            </Grid>
+
             <div className="flex gap-4  flex-row">
                 <div className="w-full flex-1">
                 <Line options={chartOptions} data={chartData} />
                 </div>
                 <div className="w-full flex-1">
                 <Pie data={pieData} />
+                </div>
+            </div>
+
+            {/* Graphiques avSalaires */}
+            <div className="flex gap-4 flex-row mt-8">
+                <div className="w-full flex-1">
+                    <Line options={avSalaireChartOptions} data={avSalaireLineData} />
+                </div>
+                <div className="w-full flex-1">
+                    <Pie data={avSalairePieData} />
                 </div>
             </div>
         </ResponsableLayout>

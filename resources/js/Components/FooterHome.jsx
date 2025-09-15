@@ -28,6 +28,11 @@ export default function FooterHome() {
                                     Demande cofi'Pharma
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/demandeAvSalaire" className="text-gray-300 hover:text-white transition-colors">
+                                    Demande avance sur salaire
+                                </Link>
+                            </li>
                             {/* <li>
                                 <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
                                     Contact
